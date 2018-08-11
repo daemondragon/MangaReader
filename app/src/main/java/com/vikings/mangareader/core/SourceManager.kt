@@ -1,6 +1,5 @@
 package com.vikings.mangareader.core
 
-import com.vikings.mangareader.source.Mangakakalot
 import com.vikings.mangareader.source.NullSource
 
 /**

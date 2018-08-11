@@ -17,6 +17,8 @@ interface Source {
     /**
      * Unique identifier of the source.
      * Is used to know which source have created the manga.
+     *
+     * Any negative id (< 0) is reserved for error purpose.
      */
     val id: Int
     /**
