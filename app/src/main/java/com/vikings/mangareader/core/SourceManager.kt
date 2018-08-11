@@ -1,5 +1,7 @@
 package com.vikings.mangareader.core
 
+import com.vikings.mangareader.source.NullSource
+
 /**
  * Manage all source so that a source
  * can easily be retrieved when needed.
@@ -22,8 +24,8 @@ object SourceManager {
         sources.add(source)
     }
 
-    fun get(sourceId: Int): Source? {
-        return sources.find { it.id == sourceId }
+    fun get(sourceId: Int): Source {
+        return sources.find { it.id == sourceId } ?: NullSource()
     }
 
     fun remove(source: Source) {

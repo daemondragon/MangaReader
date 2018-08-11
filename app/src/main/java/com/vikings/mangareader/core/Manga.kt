@@ -1,5 +1,7 @@
 package com.vikings.mangareader.core
 
+import java.io.Serializable
+
 /**
  * Contains all information relative to the manga.
  *
@@ -10,25 +12,15 @@ package com.vikings.mangareader.core
  * For all fields that are a list, an empty list means that there is nothing
  * in it (content loaded), whereas a null list means that the field is not
  * yet loaded (or an error occurred).
- *
- * A Manga is considered the same as another one if they share the same [name]
- * and the same [originalSourceId]. That means that if the same manga
- * (from the user perspective) is marked as favorite from multiples sources,
- * it will appears twice in the local source.
  */
-interface Manga {
+interface Manga: Serializable {
     var name: String
 
     /**
      * The source to which the manga need to be loaded to load all wanted information.
-     * This field is for loading, and not for display.
+     * This field is for loading, not how to get the original source.
      */
     var sourceId: Int
-    /**
-     * The original source of the manga. This field is use for display, to let the user know
-     * from which source the manga have been retrieved first.
-     */
-    var originalSourceId: Int
     /**
      * The url used to retrieve the original manga information. It have multiple use:
      * - for website source, know where to load all manga information.
