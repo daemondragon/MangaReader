@@ -25,7 +25,7 @@ object SourceManager {
     }
 
     fun get(sourceId: Int): Source {
-        return sources.find { it.id == sourceId } ?: NullSource()
+        return sources.find { it.id == sourceId } ?: NullSource(sourceId)
     }
 
     fun remove(source: Source) {

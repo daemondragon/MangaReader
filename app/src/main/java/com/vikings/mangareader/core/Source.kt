@@ -8,6 +8,10 @@ import io.reactivex.Observable
  *
  * All fetch operations are expected to be run in a separate
  * thread if needed to not stop the UI thread.
+ *
+ * All pages index start at 0. That means that if a website
+ * have its page index starting at one, the related source
+ * will have to adjust the number to match with the starting index.
  */
 interface Source {
     /**
@@ -20,6 +24,12 @@ interface Source {
      * Must be internationalized.
      */
     val name: String
+
+    /**
+     * Get the latest manga.
+     * TODO: instead of having fetchXXXMangas(page), have fetchManga(type, page) where type is source dependent.
+     */
+    fun fetchLatestMangas(page: Int): Observable<MangasPage>
 
     /**
      * Load information about the manga.
