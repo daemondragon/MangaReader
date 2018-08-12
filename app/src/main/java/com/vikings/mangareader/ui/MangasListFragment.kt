@@ -1,4 +1,4 @@
-package com.vikings.mangareader.ui.mangasList
+package com.vikings.mangareader.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -16,8 +16,6 @@ import com.vikings.mangareader.core.Source
 import com.vikings.mangareader.core.SourceManager
 import kotlinx.android.synthetic.main.fragment_mangas_list.*
 
-private const val SOURCE_ID = "MangaListFragment.sourceId"
-
 /**
  * A [Fragment] that show all contains of the source.
  * Activities that contain this fragment must implement the
@@ -26,7 +24,20 @@ private const val SOURCE_ID = "MangaListFragment.sourceId"
  * Use the [MangasListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MangasListFragment : Fragment() {
+class MangasListFragment: Fragment() {
+    companion object {
+        const val SOURCE_ID = "MangaListFragment.sourceId"
+
+        @JvmStatic
+        fun newInstance(sourceId: Int): MangasListFragment {
+            return MangasListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(SOURCE_ID, sourceId)
+                }
+            }
+        }
+    }
+
     private lateinit var source: Source
 
     private val mangasListAdapter = MangasListAdapter()
@@ -52,6 +63,8 @@ class MangasListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+        mangas_list_refresh.isEnabled = false//No user interaction
 
         mangas_list_view.apply {
             layoutManager = LinearLayoutManager(this@MangasListFragment.requireContext())
@@ -80,8 +93,12 @@ class MangasListFragment : Fragment() {
 
     private fun loadMangasPage() {
         loading = true
+        mangas_list_refresh.isRefreshing = true
+
         source.fetchLatestMangas(nextPage)
             .subscribe({
+                mangas_list_refresh.isRefreshing = false
+
                 mangas_list_view.post {
                     val previousSize = mangasListAdapter.mangas.size
                     mangasListAdapter.mangas.addAll(it.mangas)
@@ -95,6 +112,8 @@ class MangasListFragment : Fragment() {
                     loading = false
                 }
             },{
+                mangas_list_refresh.isRefreshing = false
+
                 Snackbar.make(mangas_list_coordinator,
                     R.string.error_mangas_list_load,
                     Snackbar.LENGTH_INDEFINITE)
@@ -116,7 +135,7 @@ class MangasListFragment : Fragment() {
         fun onMangaSelection(manga: Manga)
     }
 
-    private var listener:Listener? = null
+    private var listener: Listener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -130,16 +149,5 @@ class MangasListFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(sourceId: Int): MangasListFragment {
-            return MangasListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(SOURCE_ID, sourceId)
-                }
-            }
-        }
     }
 }

@@ -1,15 +1,12 @@
 package com.vikings.mangareader.ui
 
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
 import com.vikings.mangareader.Singletons
 import com.vikings.mangareader.core.Manga
-import com.vikings.mangareader.ui.catalogue.CatalogueFragment
-import com.vikings.mangareader.ui.mangasList.MangasListFragment
 import kotlinx.android.synthetic.main.activity_drawer.*
 
 /**
@@ -67,7 +64,9 @@ class DrawerActivity : AppCompatActivity(),
 
             //Switch to wanted fragment
             val fragment = when (menuItem.itemId) {
-                R.id.nav_catalogue      -> { CatalogueFragment() }
+                R.id.nav_catalogue      -> {
+                    CatalogueFragment()
+                }
                 R.id.nav_library        -> { TODO("set current fragment to library") }
                 R.id.nav_download_queue -> { TODO("set current fragment to dl queue") }
                 R.id.nav_settings       -> { TODO("set current fragment to settings") }

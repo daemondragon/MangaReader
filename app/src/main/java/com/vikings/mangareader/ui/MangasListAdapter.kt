@@ -1,4 +1,4 @@
-package com.vikings.mangareader.ui.mangasList
+package com.vikings.mangareader.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -16,7 +16,7 @@ class MangasListAdapter
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangasListAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.mangas_list_item, parent, false)
@@ -27,7 +27,7 @@ class MangasListAdapter
         return mangas.size
     }
 
-    override fun onBindViewHolder(holder: MangasListAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.findViewById<TextView>(R.id.mangas_list_item_name)?.text = mangas[position].name
     }
 }
