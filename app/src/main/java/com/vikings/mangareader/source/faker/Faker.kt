@@ -1,4 +1,4 @@
-package com.vikings.mangareader.source
+package com.vikings.mangareader.source.faker
 
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.MangaImpl
@@ -17,15 +17,21 @@ class Faker: Source {
 
     override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
         return Observable.create {
-            it.onNext(MangasPage(
-                mangas = (0..MANGA_PER_PAGE).map { index ->
-                    val manga = MangaImpl()
-                    manga.name = "Manga ${index + MANGA_PER_PAGE * page} (page $page)"
-                    manga.url = "fake url"
-                    manga
-                },
-                hasNext = true
-            ))
+            if (FakerFailure.isSuccess()) {
+                it.onNext(MangasPage(
+                    mangas = (0..MANGA_PER_PAGE).map { index ->
+                        val manga = MangaImpl()
+                        manga.name = "Manga ${index + MANGA_PER_PAGE * page} (page $page)"
+                        manga.url = "fake url"
+                        manga
+                    },
+                    hasNext = true
+                ))
+            }
+            else {
+                it.onError(Exception("Could not load faker mangas list"))
+            }
+
             it.onComplete()
         }
     }

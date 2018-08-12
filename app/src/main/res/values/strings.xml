@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MangaReader</string>
+
+    <!-- Dialog -->
+    <string name="error">Error</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry</string>
+
+    <string name="error_mangas_list_load">Could not load mangas list</string>
+
 </resources>

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.vikings.mangareader.core.SourceManager
-import com.vikings.mangareader.source.Faker
+import com.vikings.mangareader.source.faker.Faker
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
