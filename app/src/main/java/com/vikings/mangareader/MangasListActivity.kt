@@ -44,7 +44,9 @@ class MangasListActivity : AppCompatActivity() {
                         mangas.map { manga -> manga.name })
 
                     onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
-                        TODO("launch manga ${mangas[i].name}")
+                        val intent = Intent(this@MangasListActivity, MangaActivity::class.java)
+                        intent.putExtra(MangaActivity.MANGA, mangas[i])
+                        startActivity(intent)
                     }
 
                     if (mangasPage.hasNext) {

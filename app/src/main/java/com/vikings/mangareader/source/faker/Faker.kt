@@ -23,6 +23,7 @@ class Faker: Source {
                         val manga = MangaImpl()
                         manga.name = "Manga ${index + MANGA_PER_PAGE * page} (page $page)"
                         manga.url = "fake url"
+                        manga.sourceId = id
                         manga
                     },
                     hasNext = true
@@ -37,7 +38,21 @@ class Faker: Source {
     }
 
     override fun fetchMangaInformation(manga: Manga): Observable<Manga> {
-        TODO("not implemented")
+        return Observable.create {
+            if (true) {
+                manga.status = Manga.Status.Finished
+                manga.rating = 0.5f
+                manga.authors = listOf("Author 1", "Another authors with long name", "3")
+                manga.genres = listOf("Hello", "World", "I'm a genre!")
+                manga.summary = "I'm a summary with a relatively short description of what the manga contains"
+
+                it.onNext(manga)
+            }
+            else {
+                it.onError(Exception("Could not load faker manga"))
+            }
+            it.onComplete()
+        }
     }
 
 }
