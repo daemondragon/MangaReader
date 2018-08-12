@@ -1,12 +1,13 @@
 package com.vikings.mangareader.ui
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import android.support.v4.view.GravityCompat
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
 import com.vikings.mangareader.Singletons
+import com.vikings.mangareader.ui.catalogue.CatalogueFragment
 import kotlinx.android.synthetic.main.activity_drawer.*
 
 /**
@@ -19,18 +20,27 @@ import kotlinx.android.synthetic.main.activity_drawer.*
  * - Download queue: show all background download.
  * - Settings
  */
-class DrawerActivity : AppCompatActivity() {
+class DrawerActivity : AppCompatActivity(), CatalogueFragment.OnSourceSelection {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawer)
 
         Singletons.initAll(applicationContext)
 
+        setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_menu)
         }
+
         initDrawer()
+
+        //Set starting fragment as the catalogue
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.drawer_fragment_layout, CatalogueFragment())
+            .commit()
+        drawer_navigation_layout.setCheckedItem(R.id.nav_catalogue)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -51,18 +61,26 @@ class DrawerActivity : AppCompatActivity() {
             menuItem.isChecked = true
 
             //Switch to wanted fragment
-            when (menuItem.itemId) {
-                R.id.nav_catalogue      -> { TODO("set current fragment to catalogue") }
+            val fragment = when (menuItem.itemId) {
+                R.id.nav_catalogue      -> { CatalogueFragment() }
                 R.id.nav_library        -> { TODO("set current fragment to library") }
                 R.id.nav_download_queue -> { TODO("set current fragment to dl queue") }
                 R.id.nav_settings       -> { TODO("set current fragment to settings") }
+                else                    -> throw Exception("Unknown menu id")
             }
+
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.drawer_fragment_layout, fragment)
+                .commit()
 
             drawer_layout.closeDrawers()
 
             true
         }
+    }
 
-        //drawer_navigation_layout.setCheckedItem(R.id.nav_catalogue)
+    override fun onSourceSelection(sourceId: Int) {
+        /* Change to another fragment showing the source content */
     }
 }
