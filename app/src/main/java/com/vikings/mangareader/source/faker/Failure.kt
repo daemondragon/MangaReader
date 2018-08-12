@@ -6,7 +6,7 @@ package com.vikings.mangareader.source.faker
  * Success rate can't be set, but is approximately 50%
  */
 object FakerFailure {
-    private var probabilities: MutableList<Boolean> = mutableListOf(false, true)
+    private var probabilities: MutableList<Boolean> = mutableListOf(true, true)
     private var index = 0
 
     fun isSuccess(): Boolean {

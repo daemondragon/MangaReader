@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
 import com.vikings.mangareader.Singletons
+import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.ui.catalogue.CatalogueFragment
+import com.vikings.mangareader.ui.mangasList.MangasListFragment
 import kotlinx.android.synthetic.main.activity_drawer.*
 
 /**
@@ -20,7 +22,10 @@ import kotlinx.android.synthetic.main.activity_drawer.*
  * - Download queue: show all background download.
  * - Settings
  */
-class DrawerActivity : AppCompatActivity(), CatalogueFragment.OnSourceSelection {
+class DrawerActivity : AppCompatActivity(),
+    CatalogueFragment.Listener,
+    MangasListFragment.Listener {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawer)
@@ -81,6 +86,13 @@ class DrawerActivity : AppCompatActivity(), CatalogueFragment.OnSourceSelection 
     }
 
     override fun onSourceSelection(sourceId: Int) {
-        /* Change to another fragment showing the source content */
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.drawer_fragment_layout, MangasListFragment.newInstance(sourceId))
+            .commit()
+    }
+
+    override fun onMangaSelection(manga: Manga) {
+        TODO("not implemented")
     }
 }

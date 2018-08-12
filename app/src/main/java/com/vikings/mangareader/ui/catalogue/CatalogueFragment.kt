@@ -16,9 +16,9 @@ import com.vikings.mangareader.core.SourceManager
 import kotlinx.android.synthetic.main.fragment_catalogue.*
 
 /**
- * A simple [Fragment] subclass that shows all sources.
+ * A [Fragment] that shows all available sources.
  * Activities that contain this fragment must implement the
- * [CatalogueFragment.OnSourceSelection] interface
+ * [CatalogueFragment.Listener] interface
  * to handle interaction events.
  */
 class CatalogueFragment : Fragment() {
@@ -50,18 +50,18 @@ class CatalogueFragment : Fragment() {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    interface OnSourceSelection {
+    interface Listener {
         fun onSourceSelection(sourceId: Int)
     }
 
-    private var listener: OnSourceSelection? = null
+    private var listener: Listener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnSourceSelection) {
+        if (context is Listener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnSourceSelection")
+            throw RuntimeException(context.toString() + " must implement Listener")
         }
     }
 

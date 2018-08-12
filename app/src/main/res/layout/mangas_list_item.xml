@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+For now, only a simple textView is used, but in the future,
+more complex layout could be created thanks to this.
+-->
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/listPreferredItemHeightSmall">
+
+    <TextView
+        android:id="@+id/mangas_list_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?attr/textAppearanceListItem">
+    </TextView>
+</android.support.constraint.ConstraintLayout>
