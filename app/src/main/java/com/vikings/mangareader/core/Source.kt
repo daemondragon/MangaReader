@@ -1,5 +1,6 @@
 package com.vikings.mangareader.core
 
+import android.graphics.drawable.Drawable
 import io.reactivex.Observable
 
 /**
@@ -39,4 +40,11 @@ interface Source {
      * have been filled if an error occurred for instance.
      */
     fun fetchMangaInformation(manga: Manga): Observable<Manga>
+
+    /**
+     * Load the cover of the manga. It's not included in
+     * manga information as fetching this information usually
+     * require and extra indirection.
+     */
+    fun fetchMangaCover(manga: Manga): Observable<Drawable>
 }

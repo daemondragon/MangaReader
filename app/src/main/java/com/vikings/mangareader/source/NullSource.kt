@@ -1,5 +1,6 @@
 package com.vikings.mangareader.source
 
+import android.graphics.drawable.Drawable
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.MangasPage
 import com.vikings.mangareader.core.Source
@@ -11,7 +12,6 @@ import io.reactivex.Observable
  * each time a [Source] is wanted.
  */
 class NullSource(override val id: Int): Source {
-
     override val name: String = "Null Source"
 
     override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
@@ -19,6 +19,10 @@ class NullSource(override val id: Int): Source {
     }
 
     override fun fetchMangaInformation(manga: Manga): Observable<Manga> {
+        throw Exception("Source not found. Wanted id: $id")
+    }
+
+    override fun fetchMangaCover(manga: Manga): Observable<Drawable> {
         throw Exception("Source not found. Wanted id: $id")
     }
 }

@@ -1,5 +1,6 @@
 package com.vikings.mangareader.source.faker
 
+import android.graphics.drawable.Drawable
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.MangaImpl
 import com.vikings.mangareader.core.MangasPage
@@ -55,4 +56,12 @@ class Faker: Source {
         }
     }
 
+    override fun fetchMangaCover(manga: Manga): Observable<Drawable> {
+        return Observable.create {
+            //Do not load a drawable as it is hard to get one from resource directory
+            //without the current context.
+            it.onError(Exception("Could not load faker cover"))
+            it.onComplete()
+        }
+    }
 }

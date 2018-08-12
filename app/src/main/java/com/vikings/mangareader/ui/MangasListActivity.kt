@@ -1,38 +1,26 @@
 package com.vikings.mangareader.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.AbsListView
 import com.vikings.mangareader.R
-import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.Source
 import com.vikings.mangareader.core.SourceManager
-import kotlinx.android.synthetic.main.fragment_mangas_list.*
+import kotlinx.android.synthetic.main.activity_mangas_list.*
 
-/**
- * A [Fragment] that show all contains of the source.
- * Activities that contain this fragment must implement the
- * [MangasListFragment.Listener] interface
- * to handle interaction events.
- * Use the [MangasListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MangasListFragment: Fragment() {
+class MangasListActivity: DrawerActivity() {
+    override fun getLayout(): Int = R.layout.activity_mangas_list
+
     companion object {
         const val SOURCE_ID = "MangaListFragment.sourceId"
 
         @JvmStatic
-        fun newInstance(sourceId: Int): MangasListFragment {
-            return MangasListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(SOURCE_ID, sourceId)
-                }
-            }
+        fun getIntent(context: Context, sourceId: Int): Intent {
+            val intent = Intent(context, MangasListActivity::class.java)
+            intent.putExtra(SOURCE_ID, sourceId)
+            return intent
         }
     }
 
@@ -46,20 +34,9 @@ class MangasListFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            source = SourceManager.get(it.getInt(SOURCE_ID))
-        }
 
-        activity?.title = source.name
-    }
+        source = SourceManager.get(intent.extras?.getInt(SOURCE_ID) ?: -1)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mangas_list, container, false)
-    }
-
-    override fun onStart() {
         super.onStart()
 
         mangas_list_refresh.isEnabled = false//No user interaction
@@ -81,7 +58,9 @@ class MangasListFragment: Fragment() {
 
             })
             setOnItemClickListener { _, _, i, _ ->
-                listener?.onMangaSelection(mangasListAdapter.mangas[i])
+                startActivity(MangaActivity.getIntent(
+                    this@MangasListActivity,
+                    mangasListAdapter.mangas[i]))
             }
         }
     }
@@ -116,31 +95,5 @@ class MangasListFragment: Fragment() {
                     }
                     .show()
             })
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    interface Listener {
-        fun onMangaSelection(manga: Manga)
-    }
-
-    private var listener: Listener? = null
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Listener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement Listener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 }

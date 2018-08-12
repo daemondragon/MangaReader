@@ -11,15 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ui.DrawerActivity">
+        <activity android:name=".ui.CatalogueActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MangaActivity"/>
-
+        <activity android:name=".ui.MangasListActivity" />
+        <activity android:name=".ui.MangaActivity" />
     </application>
 
 </manifest>

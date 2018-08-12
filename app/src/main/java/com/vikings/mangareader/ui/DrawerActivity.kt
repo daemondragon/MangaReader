@@ -1,29 +1,19 @@
 package com.vikings.mangareader.ui
 
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
 import com.vikings.mangareader.Singletons
-import com.vikings.mangareader.core.Manga
 import kotlinx.android.synthetic.main.activity_drawer.*
 
 /**
- * Activity that switch the current fragment in function
- * of the selected item in the drawer navigation.
- *
- * Navigation items are:
- * - Catalogue: show all sources
- * - Library: show the local source contents.
- * - Download queue: show all background download.
- * - Settings
+ * Abstract activity whose only purpose is to handle
+ * all activity that need a Drawer
  */
-class DrawerActivity : AppCompatActivity(),
-    CatalogueFragment.Listener,
-    MangasListFragment.Listener,
-    MangaFragment.Listener {
+abstract class DrawerActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,20 +21,33 @@ class DrawerActivity : AppCompatActivity(),
 
         Singletons.initAll(applicationContext)
 
+        //Add child layout
+        layoutInflater.inflate(getLayout(), drawer_content_layout)
+
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setHomeAsUpIndicator(R.drawable.ic_menu)
         }
 
-        initDrawer()
+        drawer_navigation_layout.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
 
-        //Set starting fragment as the catalogue
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.drawer_fragment_layout, CatalogueFragment())
-            .commit()
-        drawer_navigation_layout.setCheckedItem(R.id.nav_catalogue)
+            //Switch to wanted fragment
+            val intent = when (menuItem.itemId) {
+                R.id.nav_catalogue      -> { Intent(applicationContext, CatalogueActivity::class.java) }
+                R.id.nav_library        -> { TODO("set current fragment to library") }
+                R.id.nav_download_queue -> { TODO("set current fragment to dl queue") }
+                R.id.nav_settings       -> { TODO("set current fragment to settings") }
+                else                    -> throw Exception("Unknown menu id")
+            }
+
+            drawer_layout.closeDrawers()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+
+            true
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -60,49 +63,9 @@ class DrawerActivity : AppCompatActivity(),
         }
     }
 
-    private fun initDrawer() {
-        drawer_navigation_layout.setNavigationItemSelectedListener { menuItem ->
-            menuItem.isChecked = true
-
-            //Switch to wanted fragment
-            val fragment = when (menuItem.itemId) {
-                R.id.nav_catalogue      -> {
-                    CatalogueFragment()
-                }
-                R.id.nav_library        -> { TODO("set current fragment to library") }
-                R.id.nav_download_queue -> { TODO("set current fragment to dl queue") }
-                R.id.nav_settings       -> { TODO("set current fragment to settings") }
-                else                    -> throw Exception("Unknown menu id")
-            }
-
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.drawer_fragment_layout, fragment)
-                .commit()
-
-            drawer_layout.closeDrawers()
-
-            true
-        }
-    }
-
-    override fun onSourceSelection(sourceId: Int) {
-        replaceFragmentAndAddToBackStack(MangasListFragment.newInstance(sourceId))
-    }
-
-    override fun onMangaSelection(manga: Manga) {
-        replaceFragmentAndAddToBackStack(MangaFragment.newInstance(manga))
-    }
-
-    override fun onChapterSelected(manga: Manga) {
-        TODO("not implemented")
-    }
-
-    private fun replaceFragmentAndAddToBackStack(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.drawer_fragment_layout, fragment)
-            .addToBackStack(null)
-            .commit()
-    }
+    /**
+     * Get the layout wanted that will be placed as a child
+     * of the drawer layout.
+     */
+    abstract fun getLayout(): Int
 }
