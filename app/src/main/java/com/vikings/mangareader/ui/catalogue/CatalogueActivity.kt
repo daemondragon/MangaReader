@@ -1,4 +1,4 @@
-package com.vikings.mangareader.ui
+package com.vikings.mangareader.ui.catalogue
 
 import android.os.Bundle
 import android.util.Log
@@ -6,6 +6,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.ui.DrawerActivity
+import com.vikings.mangareader.ui.mangas_list.MangasListActivity
 import kotlinx.android.synthetic.main.activity_catalogue.*
 
 class CatalogueActivity : DrawerActivity() {

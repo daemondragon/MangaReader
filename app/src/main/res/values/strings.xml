@@ -7,13 +7,15 @@
     <string name="download_queue">Download queue</string>
     <string name="settings">Settings</string>
 
-    <!-- Alert Dialog -->
-    <string name="error">Error</string>
-    <string name="cancel">Cancel</string>
+    <!-- Snacks -->
     <string name="retry">Retry</string>
+    <string name="go_back">Go back</string>
 
-    <string name="error_mangas_list_load">Could not load mangas list</string>
-    <string name="error_manga_load">Could not load manga</string>
+    <string name="error_mangas_list_load"   >Could not load mangas list</string>
+    <string name="error_manga_load"         >Could not load manga</string>
+    <string name="error_chapter_load"       >Could not load chapter</string>
+    <string name="error_empty_chapter"      >Chapter does not contains any pages</string>
+    <string name="error_page_load"          >Could not load page</string>
 
     <!-- Manga activity -->
     <string name="cover">Cover</string>
@@ -29,7 +31,7 @@
     <string name="status_finished">Finished</string>
     <string name="status_licensed">Licensed</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Page activity -->
+    <string name="page_picture">Page picture</string>
 
 </resources>

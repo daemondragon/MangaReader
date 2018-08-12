@@ -1,4 +1,4 @@
-package com.vikings.mangareader.ui
+package com.vikings.mangareader.ui.manga
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,24 +6,24 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.vikings.mangareader.R
-import com.vikings.mangareader.core.Manga
+import com.vikings.mangareader.core.Chapter
 
-class MangasListAdapter : BaseAdapter() {
-    val mangas = mutableListOf<Manga>()
+class ChaptersListAdapter : BaseAdapter() {
+    val chapters = mutableListOf<Chapter>()
 
     override fun getView(position: Int, convertView: View?, container: ViewGroup?): View {
         var result = convertView
         if (result == null) {
             result = LayoutInflater.from(container?.context)
-                .inflate(R.layout.mangas_list_item, container, false)
+                .inflate(R.layout.chapters_list_item, container, false)
         }
 
-        result!!.findViewById<TextView>(R.id.mangas_list_item_name)?.text = mangas[position].name
+        result!!.findViewById<TextView>(R.id.chapters_list_item_name)?.text = chapters[position].name
         return result
     }
 
     override fun getItem(position: Int): Any {
-        return mangas[position]
+        return chapters[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -31,6 +31,6 @@ class MangasListAdapter : BaseAdapter() {
     }
 
     override fun getCount(): Int {
-        return mangas.size
+        return chapters.size
     }
 }

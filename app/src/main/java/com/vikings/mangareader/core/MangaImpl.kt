@@ -22,6 +22,8 @@ class MangaImpl: Manga {
 
     override var status: Manga.Status = Manga.Status.Unknown
 
+    override var chapters: List<Chapter>? = null
+
     override var favorite: Boolean? = null
 
     override var automaticDownload: Boolean? = null

@@ -47,4 +47,17 @@ interface Source {
      * require and extra indirection.
      */
     fun fetchMangaCover(manga: Manga): Observable<Drawable>
+
+    /**
+     * Load all chapter information.
+     * Note that subsequent call to [fetchMangaInformation] and [fetchChapterInformation]
+     * must get all chapter information if both call succeeded.
+     * It's not expected to have this call retrieve all information (except [Page])
+     */
+    fun fetchChapterInformation(chapter: Chapter): Observable<Chapter>
+
+    /**
+     * Load information about the page, principally the picture associated.
+     */
+    fun fetchPageInformation(page: Page): Observable<Page>
 }

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
 import com.vikings.mangareader.Singletons
+import com.vikings.mangareader.ui.catalogue.CatalogueActivity
 import kotlinx.android.synthetic.main.activity_drawer.*
 
 /**

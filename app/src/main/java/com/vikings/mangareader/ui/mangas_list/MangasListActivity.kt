@@ -1,4 +1,4 @@
-package com.vikings.mangareader.ui
+package com.vikings.mangareader.ui.mangas_list
 
 import android.content.Context
 import android.content.Intent
@@ -8,6 +8,8 @@ import android.widget.AbsListView
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Source
 import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.ui.DrawerActivity
+import com.vikings.mangareader.ui.manga.MangaActivity
 import kotlinx.android.synthetic.main.activity_mangas_list.*
 
 class MangasListActivity: DrawerActivity() {

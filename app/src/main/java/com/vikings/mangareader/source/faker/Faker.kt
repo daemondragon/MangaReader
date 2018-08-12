@@ -1,11 +1,9 @@
 package com.vikings.mangareader.source.faker
 
 import android.graphics.drawable.Drawable
-import com.vikings.mangareader.core.Manga
-import com.vikings.mangareader.core.MangaImpl
-import com.vikings.mangareader.core.MangasPage
-import com.vikings.mangareader.core.Source
+import com.vikings.mangareader.core.*
 import io.reactivex.Observable
+import java.util.*
 
 /**
  * Fake source whose only purpose is to be used for tests.
@@ -14,15 +12,17 @@ class Faker: Source {
     override val id: Int = 1
     override val name: String = "Faker"
 
-    private val MANGA_PER_PAGE = 20
+    private val MANGAS_PER_PAGE    = 20
+    private val CHAPTERS_PER_MANGA = 10
+    private val PAGES_PER_CHAPTER  = 20
 
     override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
         return Observable.create {
             if (FakerFailure.isSuccess()) {
                 it.onNext(MangasPage(
-                    mangas = (0..MANGA_PER_PAGE).map { index ->
+                    mangas = (0..MANGAS_PER_PAGE).map { index ->
                         val manga = MangaImpl()
-                        manga.name = "Manga ${index + MANGA_PER_PAGE * page} (page $page)"
+                        manga.name = "Manga ${index + MANGAS_PER_PAGE * page} (page $page)"
                         manga.url = "fake url"
                         manga.sourceId = id
                         manga
@@ -46,6 +46,16 @@ class Faker: Source {
                 manga.authors = listOf("Author 1", "Another authors with long name", "3")
                 manga.genres = listOf("Hello", "World", "I'm a genre!")
                 manga.summary = "I'm a summary with a relatively short description of what the manga contains"
+                manga.chapters = (0..CHAPTERS_PER_MANGA).map { index ->
+                    val chapter = ChapterImpl()
+                    chapter.name = "Chapter $index"
+                    chapter.url = "fake url"
+                    chapter.sourceId = id
+                    chapter.release = Date()
+                    chapter.number = index.toFloat()
+
+                    chapter
+                }
 
                 it.onNext(manga)
             }
@@ -61,6 +71,37 @@ class Faker: Source {
             //Do not load a drawable as it is hard to get one from resource directory
             //without the current context.
             it.onError(Exception("Could not load faker cover"))
+            it.onComplete()
+        }
+    }
+
+    override fun fetchChapterInformation(chapter: Chapter): Observable<Chapter> {
+        return Observable.create {
+            if (FakerFailure.isSuccess()) {
+
+                chapter.number = chapter.number ?: 0.0f
+                chapter.release = chapter.release ?: Date()
+                chapter.pages = (0..PAGES_PER_CHAPTER).map { _ ->
+                    val page = PageImpl()
+                    page.url = "fake url"
+                    page.picture = null//Load nothing for the same reason than for cover loading.
+                    page.sourceId = id
+
+                    page
+                }
+
+                it.onNext(chapter)
+            }
+            else {
+                it.onError(Exception("Could not load faker chapter"))
+            }
+            it.onComplete()
+        }
+    }
+
+    override fun fetchPageInformation(page: Page): Observable<Page> {
+        return Observable.create {
+            it.onError(Exception("Could not load faker page"))
             it.onComplete()
         }
     }

@@ -1,4 +1,4 @@
-package com.vikings.mangareader.ui
+package com.vikings.mangareader.ui.manga
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,8 @@ import android.support.design.widget.Snackbar
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.ui.DrawerActivity
+import com.vikings.mangareader.ui.page.PageActivity
 import kotlinx.android.synthetic.main.activity_manga.*
 
 
@@ -26,6 +28,8 @@ class MangaActivity : DrawerActivity() {
 
     private lateinit var manga: Manga
 
+    private val chaptersListAdapter = ChaptersListAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         manga = intent.extras?.getSerializable(MANGA) as Manga
@@ -42,9 +46,15 @@ class MangaActivity : DrawerActivity() {
         loadManga()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        manga.dispose()//To clear chapter information
+    }
+
     private fun loadManga() {
         manga_refresh.isRefreshing = true
         val source = SourceManager.get(manga.sourceId)
+
         source.fetchMangaInformation(manga)
             .subscribe({ manga ->
                 display(manga)
@@ -87,5 +97,19 @@ class MangaActivity : DrawerActivity() {
             manga_summary.text = manga.summary
 
         manga_source.text = SourceManager.get(manga.sourceId).name
+
+        if (manga.chapters != null) {
+            chapters_list.apply {
+                adapter = chaptersListAdapter
+                //Display all chapters
+                chaptersListAdapter.chapters.addAll(manga.chapters!!)
+                chaptersListAdapter.notifyDataSetChanged()
+
+                setOnItemClickListener { _, _, i, _ ->
+                    startActivity(
+                        PageActivity.getIntent(this@MangaActivity, manga.chapters!!, i))
+                }
+            }
+        }
     }
 }

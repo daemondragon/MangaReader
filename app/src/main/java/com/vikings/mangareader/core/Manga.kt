@@ -1,5 +1,6 @@
 package com.vikings.mangareader.core
 
+import android.util.Log
 import java.io.Serializable
 
 /**
@@ -44,6 +45,8 @@ interface Manga: Serializable {
      */
     var status: Status
 
+    var chapters: List<Chapter>?
+
     /*
      * Under this comment all fields are fields that need to be loaded from
      * the database (local source) to know their values.
@@ -74,5 +77,14 @@ interface Manga: Serializable {
         OnGoing,
         Finished,
         Licensed
+    }
+
+    /**
+     * To call when additional information is not needed anymore, only
+     * a way to get back all the information again
+     */
+    fun dispose() {
+        Log.i("Core", "manga disposed")
+        chapters = null
     }
 }

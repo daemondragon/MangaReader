@@ -1,9 +1,7 @@
 package com.vikings.mangareader.source
 
 import android.graphics.drawable.Drawable
-import com.vikings.mangareader.core.Manga
-import com.vikings.mangareader.core.MangasPage
-import com.vikings.mangareader.core.Source
+import com.vikings.mangareader.core.*
 import io.reactivex.Observable
 
 /**
@@ -23,6 +21,14 @@ class NullSource(override val id: Int): Source {
     }
 
     override fun fetchMangaCover(manga: Manga): Observable<Drawable> {
+        throw Exception("Source not found. Wanted id: $id")
+    }
+
+    override fun fetchChapterInformation(chapter: Chapter): Observable<Chapter> {
+        throw Exception("Source not found. Wanted id: $id")
+    }
+
+    override fun fetchPageInformation(page: Page): Observable<Page> {
         throw Exception("Source not found. Wanted id: $id")
     }
 }

@@ -9,7 +9,7 @@ more complex layout could be created thanks to this.
     android:layout_height="?attr/listPreferredItemHeightSmall">
 
     <TextView
-        android:id="@+id/mangas_list_item_name"
+        android:id="@+id/chapters_list_item_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textAppearance="?attr/textAppearanceListItem"
