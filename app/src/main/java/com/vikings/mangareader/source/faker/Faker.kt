@@ -39,7 +39,7 @@ class Faker: Source {
 
     override fun fetchMangaInformation(manga: Manga): Observable<Manga> {
         return Observable.create {
-            if (true) {
+            if (FakerFailure.isSuccess()) {
                 manga.status = Manga.Status.Finished
                 manga.rating = 0.5f
                 manga.authors = listOf("Author 1", "Another authors with long name", "3")

@@ -2,6 +2,7 @@ package com.vikings.mangareader
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
 import kotlinx.android.synthetic.main.activity_manga.*
@@ -28,34 +29,52 @@ class MangaActivity : AppCompatActivity() {
                 chapters_summary.showNext()
         }
 
+        manga_refresh.isEnabled = false
         loadManga()
     }
 
     private fun loadManga() {
+        manga_refresh.isRefreshing = true
         val source = SourceManager.get(manga.sourceId)
         source.fetchMangaInformation(manga)
             .subscribe({
-                if (manga.authors != null)
-                    manga_authors.text = manga.authors!!.joinToString()
-                if (manga.genres != null)
-                    manga_genres.text = manga.genres!!.joinToString()
-                if (manga.rating != null)
-                    manga_rating.text = "${manga.rating!!}"
+                display(it)
 
-                manga_status.text = getString(when (manga.status) {
-                    Manga.Status.Unknown  -> R.string.status_unknown
-                    Manga.Status.OnGoing  -> R.string.status_ongoing
-                    Manga.Status.Finished -> R.string.status_finished
-                    Manga.Status.Licensed -> R.string.status_licensed
-                })
-
-                if (manga.summary != null)
-                    manga_summary.text = manga.summary
-
-                manga_source.text = source.name
-
+                //TODO: load cover
+                //TODO: load favorite and auto dl from db
+                manga_refresh.isRefreshing = false
             },{
-                TODO("add error handling")
+                manga_refresh.isRefreshing = false
+
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.error)
+                    .setMessage(R.string.error_manga_load)
+                    .setPositiveButton(R.string.retry) { _, _ ->
+                        loadManga()
+                    }
+                    .setNegativeButton(R.string.cancel) { _, _ -> /* Do nothing */ }
+                    .show()
             })
+    }
+
+    private fun display(manga: Manga) {
+        if (manga.authors != null)
+            manga_authors.text = manga.authors!!.joinToString()
+        if (manga.genres != null)
+            manga_genres.text = manga.genres!!.joinToString()
+        if (manga.rating != null)
+            manga_rating.text = "${manga.rating!!}"
+
+        manga_status.text = getString(when (manga.status) {
+            Manga.Status.Unknown  -> R.string.status_unknown
+            Manga.Status.OnGoing  -> R.string.status_ongoing
+            Manga.Status.Finished -> R.string.status_finished
+            Manga.Status.Licensed -> R.string.status_licensed
+        })
+
+        if (manga.summary != null)
+            manga_summary.text = manga.summary
+
+        manga_source.text = SourceManager.get(manga.sourceId).name
     }
 }

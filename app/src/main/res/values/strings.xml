@@ -7,6 +7,7 @@
     <string name="retry">Retry</string>
 
     <string name="error_mangas_list_load">Could not load mangas list</string>
+    <string name="error_manga_load">Could not load manga</string>
 
     <!-- Manga activity -->
     <string name="cover">Cover</string>
@@ -14,16 +15,13 @@
     <string name="genres">Genres</string>
     <string name="rating">Rating</string>
     <string name="source">Source</string>
+    <string name="show_summary">Show summary</string>
 
     <string name="status">Status</string>
     <string name="status_unknown">Unknown</string>
     <string name="status_ongoing">Ongoing</string>
     <string name="status_finished">Finished</string>
     <string name="status_licensed">Licensed</string>
-
-
-
-    <string name="show_summary">Show summary</string>
 
 
 
