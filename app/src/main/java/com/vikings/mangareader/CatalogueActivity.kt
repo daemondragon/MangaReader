@@ -3,10 +3,10 @@ package com.vikings.mangareader
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.vikings.mangareader.core.SourceManager
-import com.vikings.mangareader.source.faker.Faker
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -22,7 +22,17 @@ class CatalogueActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initSources()
+        Singletons.initAll(applicationContext)
+
+        navigation_layout.setNavigationItemSelectedListener {
+            it.isChecked = true
+
+            Log.e("DRAWER", "item checked, change to wanted page")
+
+            drawer_layout.closeDrawers()
+
+            true
+        }
 
         //Set source as variable so that if a source is removed between the display
         //and the user click, it launch an error instead of using a wrong source.
@@ -39,12 +49,5 @@ class CatalogueActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
-    }
-
-    private fun initSources() {
-        if (SourceManager.all().isNotEmpty())
-            return//Avoid reinitializing sources.
-
-        SourceManager.add(Faker())
     }
 }

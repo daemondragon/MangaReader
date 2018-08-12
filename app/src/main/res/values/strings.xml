@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">MangaReader</string>
 
+    <!-- navigation drawer -->
+    <string name="catalogue">Catalogue</string>
+    <string name="library">Library</string>
+    <string name="download_queue">Download queue</string>
+    <string name="settings">Settings</string>
+
     <!-- Alert Dialog -->
     <string name="error">Error</string>
     <string name="cancel">Cancel</string>
@@ -22,7 +28,6 @@
     <string name="status_ongoing">Ongoing</string>
     <string name="status_finished">Finished</string>
     <string name="status_licensed">Licensed</string>
-
 
 
 </resources>
