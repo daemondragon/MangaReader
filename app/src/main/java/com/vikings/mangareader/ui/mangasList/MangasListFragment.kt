@@ -1,16 +1,14 @@
 package com.vikings.mangareader.ui.mangasList
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
@@ -97,8 +95,14 @@ class MangasListFragment : Fragment() {
                     loading = false
                 }
             },{
-                Log.e("TODO", "display error")
-                loading = false
+                Snackbar.make(mangas_list_coordinator,
+                    R.string.error_mangas_list_load,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.retry) { _ ->
+                        loading = false
+                        loadMangasPage()
+                    }
+                    .show()
             })
     }
 

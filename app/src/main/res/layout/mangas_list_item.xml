@@ -12,6 +12,8 @@ more complex layout could be created thanks to this.
         android:id="@+id/mangas_list_item_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textAppearance="?attr/textAppearanceListItem">
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp">
     </TextView>
 </android.support.constraint.ConstraintLayout>

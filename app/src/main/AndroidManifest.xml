@@ -18,8 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MangasListActivity" />
-        <activity android:name=".MangaActivity" />
+        <activity android:name=".MangaActivity"/>
 
     </application>
 

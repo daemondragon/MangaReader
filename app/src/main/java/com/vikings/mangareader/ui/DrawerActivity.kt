@@ -89,6 +89,7 @@ class DrawerActivity : AppCompatActivity(),
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.drawer_fragment_layout, MangasListFragment.newInstance(sourceId))
+            .addToBackStack(null)
             .commit()
     }
 
