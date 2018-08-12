@@ -2,8 +2,7 @@ package com.vikings.mangareader.core
 
 import android.graphics.drawable.Drawable
 
-class PageImpl: Page {
-    override var sourceId: Int = -1
+class PageImpl(override var sourceId: Int): Page {
 
     override lateinit  var url: String
 

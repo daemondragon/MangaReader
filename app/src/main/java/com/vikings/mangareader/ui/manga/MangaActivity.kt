@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.util.Log
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
@@ -54,6 +55,8 @@ class MangaActivity : DrawerActivity() {
     private fun loadManga() {
         manga_refresh.isRefreshing = true
         val source = SourceManager.get(manga.sourceId)
+
+        Log.i("Manga", "loading manga information")
 
         source.fetchMangaInformation(manga)
             .subscribe({ manga ->

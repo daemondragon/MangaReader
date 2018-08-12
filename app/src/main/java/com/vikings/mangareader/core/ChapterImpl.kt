@@ -5,10 +5,8 @@ import java.util.*
 /**
  * See [Chapter] for fields explanation.
  */
-class ChapterImpl: Chapter {
+class ChapterImpl(override var sourceId: Int): Chapter {
     override lateinit var name: String
-
-    override var sourceId: Int = -1
 
     override lateinit var url: String
 

@@ -3,10 +3,8 @@ package com.vikings.mangareader.core
 /**
  * See [Manga] for fields explanation.
  */
-class MangaImpl: Manga {
+class MangaImpl(override var sourceId: Int): Manga {
     override lateinit var name: String
-
-    override var sourceId: Int = -1
 
     override lateinit var url: String
 

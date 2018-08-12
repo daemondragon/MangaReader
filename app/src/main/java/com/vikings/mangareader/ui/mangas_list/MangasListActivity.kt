@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.util.Log
 import android.widget.AbsListView
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Source
@@ -38,8 +39,7 @@ class MangasListActivity: DrawerActivity() {
         super.onCreate(savedInstanceState)
 
         source = SourceManager.get(intent.extras?.getInt(SOURCE_ID) ?: -1)
-
-        super.onStart()
+        title = source.name
 
         mangas_list_refresh.isEnabled = false//No user interaction
 
@@ -70,6 +70,8 @@ class MangasListActivity: DrawerActivity() {
     private fun loadMangasPage() {
         loading = true
         mangas_list_refresh.isRefreshing = true
+
+        Log.i("MangasList", "loading mangas page")
 
         source.fetchLatestMangas(nextPage)
             .subscribe({

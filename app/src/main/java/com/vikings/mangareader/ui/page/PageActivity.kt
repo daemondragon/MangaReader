@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.ScrollView
@@ -55,6 +56,8 @@ class PageActivity : AppCompatActivity() {
         chapters = PageActivity.chapters!!
         chapterIndex = intent.extras?.getInt(CHAPTER_INDEX) ?: 0
 
+        page_refresh.isEnabled = false//No user interaction
+
         loadChapter(ChapterSide.Start)
         // To detect left and right swipe
         initGestureDetector()
@@ -72,6 +75,8 @@ class PageActivity : AppCompatActivity() {
         loading = true
 
         val currentChapter = chapters[chapterIndex]
+
+        Log.i("Page", "loading chapter information")
 
         SourceManager.get(currentChapter.sourceId)
             .fetchChapterInformation(currentChapter)
@@ -99,6 +104,8 @@ class PageActivity : AppCompatActivity() {
     }
 
     private fun loadPage() {
+        Log.i("Page", "loading page")
+
         val currentChapter = chapters[chapterIndex]
         if (currentChapter.pages!!.isNotEmpty()) {
             page_refresh.isRefreshing = true
@@ -109,6 +116,8 @@ class PageActivity : AppCompatActivity() {
                 .fetchPageInformation(currentPage)
                 .subscribe({ page ->
                         page_refresh.isRefreshing = false
+
+                        Log.e("Page", page.picture.toString())
 
                         setTitle()
                         //Go back to the top of the scroll view.

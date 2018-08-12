@@ -2,6 +2,8 @@ package com.vikings.mangareader
 
 import android.content.Context
 import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.network.Network
+import com.vikings.mangareader.source.Mangakakalot
 import com.vikings.mangareader.source.faker.Faker
 
 /**
@@ -16,6 +18,11 @@ object Singletons {
             return
         initialized = true
 
-        SourceManager.add(Faker())
+        Network.init(context)
+
+        listOf(
+            Faker(),
+            Mangakakalot()
+        ).forEach { source -> SourceManager.add(source) }
     }
 }
