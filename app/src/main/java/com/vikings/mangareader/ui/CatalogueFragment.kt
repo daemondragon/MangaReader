@@ -30,6 +30,8 @@ class CatalogueFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        activity?.title = getString(R.string.app_name)
+
         val sources = SourceManager.all()
         source_list.apply {
             adapter = ArrayAdapter(this@CatalogueFragment.requireContext(),

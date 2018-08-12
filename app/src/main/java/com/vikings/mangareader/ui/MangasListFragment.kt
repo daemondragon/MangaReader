@@ -4,12 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.AbsListView
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.Source
@@ -67,28 +65,25 @@ class MangasListFragment: Fragment() {
         mangas_list_refresh.isEnabled = false//No user interaction
 
         mangas_list_view.apply {
-            layoutManager = LinearLayoutManager(this@MangasListFragment.requireContext())
             adapter = mangasListAdapter
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
+            setOnScrollListener(object: AbsListView.OnScrollListener {
+                override fun onScroll(p0: AbsListView?, p1: Int, p2: Int, p3: Int) {
+                    val totalItemsCount = this@apply.count
+                    val visibleItemsCount = this@apply.childCount
+                    val firstVisibleItem = this@apply.firstVisiblePosition
 
-                    layoutManager?.apply {
-                        this as LinearLayoutManager
-
-                        val totalItemsCount = itemCount
-                        val visibleItemsCount = childCount
-                        val firstVisibleItem = findFirstVisibleItemPosition()
-
-                        if (!loading && hasNextPage && totalItemsCount <= firstVisibleItem + visibleItemsCount)
-                            loadMangasPage()
-                    }
+                    if (!loading && hasNextPage &&
+                        totalItemsCount <= firstVisibleItem + visibleItemsCount)
+                        loadMangasPage()
                 }
-            })
-        }
 
-        //Load the first page, as the recycler view doesn't initiate the first time
-        loadMangasPage()
+                override fun onScrollStateChanged(p0: AbsListView?, p1: Int) { /* Nothing to do*/ }
+
+            })
+            setOnItemClickListener { _, _, i, _ ->
+                listener?.onMangaSelection(mangasListAdapter.mangas[i])
+            }
+        }
     }
 
     private fun loadMangasPage() {
@@ -100,10 +95,8 @@ class MangasListFragment: Fragment() {
                 mangas_list_refresh.isRefreshing = false
 
                 mangas_list_view.post {
-                    val previousSize = mangasListAdapter.mangas.size
                     mangasListAdapter.mangas.addAll(it.mangas)
-                    val newSize = mangasListAdapter.mangas.size
-                    mangasListAdapter.notifyItemRangeChanged(previousSize, newSize - 1)
+                    mangasListAdapter.notifyDataSetChanged()
 
                     hasNextPage = it.hasNext
                     if (hasNextPage)

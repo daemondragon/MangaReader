@@ -1,6 +1,7 @@
 package com.vikings.mangareader.ui
 
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -21,7 +22,8 @@ import kotlinx.android.synthetic.main.activity_drawer.*
  */
 class DrawerActivity : AppCompatActivity(),
     CatalogueFragment.Listener,
-    MangasListFragment.Listener {
+    MangasListFragment.Listener,
+    MangaFragment.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,14 +87,22 @@ class DrawerActivity : AppCompatActivity(),
     }
 
     override fun onSourceSelection(sourceId: Int) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.drawer_fragment_layout, MangasListFragment.newInstance(sourceId))
-            .addToBackStack(null)
-            .commit()
+        replaceFragmentAndAddToBackStack(MangasListFragment.newInstance(sourceId))
     }
 
     override fun onMangaSelection(manga: Manga) {
+        replaceFragmentAndAddToBackStack(MangaFragment.newInstance(manga))
+    }
+
+    override fun onChapterSelected(manga: Manga) {
         TODO("not implemented")
+    }
+
+    private fun replaceFragmentAndAddToBackStack(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.drawer_fragment_layout, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
