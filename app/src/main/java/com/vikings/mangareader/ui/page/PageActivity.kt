@@ -117,8 +117,6 @@ class PageActivity : AppCompatActivity() {
                 .subscribe({ page ->
                         page_refresh.isRefreshing = false
 
-                        Log.e("Page", page.picture.toString())
-
                         setTitle()
                         //Go back to the top of the scroll view.
                         page_scroll.fullScroll(ScrollView.FOCUS_UP)
@@ -165,7 +163,7 @@ class PageActivity : AppCompatActivity() {
     }
 
     private fun goToPreviousPage() {
-        if (chapterIndex == 0 && pageIndex == 0)
+        if (chapterIndex + 1 == chapters.size && pageIndex == 0)
             return
 
         val currentChapter = chapters[chapterIndex]
@@ -173,7 +171,7 @@ class PageActivity : AppCompatActivity() {
         if (pageIndex == 0) {
             currentChapter.dispose()
 
-            --chapterIndex
+            ++chapterIndex
             loadChapter(ChapterSide.End)
         }
         else {
@@ -186,7 +184,7 @@ class PageActivity : AppCompatActivity() {
 
     private fun goToNextPage() {
         val currentChapter = chapters[chapterIndex]
-        if (chapterIndex + 1 == chapters.size && pageIndex + 1 >= currentChapter.pages?.size ?: 0) {
+        if (chapterIndex == 0 && pageIndex + 1 >= currentChapter.pages?.size ?: 0) {
             finish()//Finish activity as there is nothing more to read.
             return
         }
@@ -194,7 +192,7 @@ class PageActivity : AppCompatActivity() {
         if (pageIndex + 1 >= currentChapter.pages?.size ?: 0) {
             currentChapter.dispose()
 
-            ++chapterIndex
+            --chapterIndex
             loadChapter(ChapterSide.Start)
         }
         else {

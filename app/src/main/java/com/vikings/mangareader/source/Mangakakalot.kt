@@ -1,7 +1,7 @@
 package com.vikings.mangareader.source
 
 import android.graphics.drawable.Drawable
-import android.text.Html
+import android.util.Log
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
@@ -9,6 +9,7 @@ import com.vikings.mangareader.core.*
 import com.vikings.mangareader.network.Network
 import com.vikings.mangareader.network.PictureRequest
 import io.reactivex.Observable
+import org.jsoup.Jsoup
 import java.util.*
 
 class Mangakakalot: Source {
@@ -16,35 +17,33 @@ class Mangakakalot: Source {
     override val name: String = "Mangakakalot"
 
     override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
+        val pageUrl = "http://mangakakalot.com/manga_list?type=latest&category=all&state=all&page=${page + 1}"
         return Observable.create { emitter ->
             Network.getInstance().addToRequestQueue(
-                StringRequest(Request.Method.GET,
-                    "http://mangakakalot.com/manga_list?type=latest&category=all&state=all&page=$page",
+                StringRequest(Request.Method.GET, pageUrl,
                     Response.Listener<String> { response ->
+                        val document = Jsoup.parse(response)
+                        val mangas = document.select(".list-truyen-item-wrap")
+                            .map { element ->
+                                val link = element.select("h3 > a")
+                                val manga = MangaImpl(id)
+                                manga.name = link.text()
+                                manga.url = link.attr("href")
+
+                                Log.i("Mangakakalot", "manga: \"${manga.name}\" with url: \"${manga.url}\"")
+
+                                manga
+                            }
+
+                        val lastUrl = document
+                            .select("div.group-page > a.page-blue:last-of-type")
+                            .attr("href")
+
+                        Log.i("Mangakakalot", "last url of page: $lastUrl")
+
                         emitter.onNext(MangasPage(
-                            mangas = response
-                                .split("list-truyen-item-wrap")
-                                .drop(1)//Remove trash data before first element
-                                .map { html ->
-                                    val startPos = html.indexOf("<h3>")
-                                    val startUrl = html.indexOf("href=\"", startPos) + "href=\"".length
-                                    val endUrl = html.indexOf("\"", startUrl)
-                                    val startName = html.indexOf(">", endUrl) + ">".length
-                                    val endName = html.indexOf("</a>", startName)
-
-                                    if (startPos < 0 || startUrl < 0 || endUrl < 0 || startName < 0 || endName < 0) {
-                                        emitter.onError(Exception("Could not parse latest mangas"))
-                                        emitter.onComplete()
-                                        return@Listener
-                                    }
-
-                                    val manga = MangaImpl(id)
-                                    manga.name = html.substring(startName, endName)
-                                    manga.url = html.substring(startUrl, endUrl)
-
-                                    manga
-                                },
-                            hasNext = false
+                            mangas = mangas,
+                            hasNext = lastUrl != pageUrl
                         ))
                         emitter.onComplete()
                     },
@@ -62,94 +61,39 @@ class Mangakakalot: Source {
             Network.getInstance().addToRequestQueue(
                 StringRequest(Request.Method.GET, manga.url,
                     Response.Listener<String> { html ->
-                        val startPos   = html.indexOf("manga-info-top")
-                        val startCover = html.indexOf("<img src=\"", startPos) + "<img src=\"".length
-                        val endCover   = html.indexOf("\"", startCover)
-                        val startName  = html.indexOf("<h1>", endCover) + "<h1>".length
-                        val endName    = html.indexOf("</h1>", startName)
+                        val document = Jsoup.parse(html)
 
-                        val startAuthors = html.indexOf("<li>", endName) + "<li>".length
-                        val endAuthors   = html.indexOf("</li>", startAuthors)
-                        val startGenres  = html.indexOf("Genres", endAuthors)
-                        val endGenres    = html.indexOf("</li>", startGenres)
+                        manga.coverUrl = document.select("div.manga-info-pic > img").attr("src")
 
-                        val startSummary = html.indexOf("</h2>", endGenres) + "</h2>".length
-                        val endSummary   = html.indexOf("</div>", startSummary)
-                        val startChapter = html.indexOf("chapter-list", endSummary)
-                        val endChapter   = html.indexOf("class=\"comment-info", startChapter)
+                        val information = document.select("ul.manga-info-text")
 
-                        //Checking for parsing error
-                        if (startPos < 0 || startCover < 0 || endCover < 0 || startName < 0 || endName < 0 ||
-                            startAuthors < 0 || endAuthors < 0 || startGenres < 0 || endGenres < 0 ||
-                            startSummary < 0 || endSummary < 0 || startChapter < 0 || endChapter < 0) {
-                            emitter.onError(Exception("Could not parse manga information"))
-                            emitter.onComplete()
-                            return@Listener
-                        }
+                        manga.name     = information.select("li:eq(0) > h1").text()
+                        manga.authors  = information.select("li:eq(1) > a").map { link -> link.text() }
+                        manga.status   = parseStatus(information.select("li:eq(2)").text())
+                        manga.genres   = information.select("li:eq(6) > a").map { link -> link.text() }
+                        manga.rating   = information.select("li:eq(8) em[property=v:average]").text().toFloat() /
+                            information.select("li:eq(8) em[property=v:best]").text().toFloat()
 
-                        //Parsing both authors and genres list
-                        val authors = html.substring(startAuthors, endAuthors)
-                            .split("<a").drop(1)
-                            .map { subHtml ->
-                                val start = subHtml.indexOf(">") + ">".length
-                                val end = subHtml.indexOf("<", start)
-                                if (start < 0 || end < 0) {
-                                    emitter.onError(Exception("Could not parse manga information"))
-                                    emitter.onComplete()
-                                    return@Listener
-                                }
-                                subHtml.substring(start, end)
-                            }
-                        val genres = html.substring(startGenres, endGenres)
-                            .split("<a").drop(1)
-                            .map { subHtml ->
-                                val start = subHtml.indexOf(">") + ">".length
-                                val end = subHtml.indexOf("<", start)
-                                if (start < 0 || end < 0) {
-                                    emitter.onError(Exception("Could not parse manga information"))
-                                    emitter.onComplete()
-                                    return@Listener
-                                }
-                                subHtml.substring(start, end)
-                            }
+                        manga.summary  = document.select("div#noidungm").text()
 
-                        val chapters = html.substring(startChapter, endChapter)
-                            .split("<a").drop(1)
-                            .map { subHtml ->
-                                val startUrl = subHtml.indexOf("href=\"") + "href=\"".length
-                                val endUrl   = subHtml.indexOf("\"", startUrl)
-                                val startChapterName = subHtml.indexOf(">", endUrl) + ">".length
-                                val endChapterName   = subHtml.indexOf("<", startChapterName)
-                                val startRelease     = subHtml.indexOf("<span>",
-                                    (subHtml.indexOf("<span>", endChapterName) + "<span>".length)
-                                ) + "<span>".length
-                                val endRelease       = subHtml.indexOf("<", startRelease)
+                        manga.chapters = document.select("div#chapter div.chapter-list > div.row")
+                            .map { element ->
+                                val chapter = ChapterImpl(id)
+                                chapter.name = element.select("span:eq(0) > a").text()
+                                chapter.url = element.select("span:eq(0) > a").attr("href")
+                                chapter.release = Date()//TODO: parse date
 
-                                if (startUrl < 0 || endUrl < 0 || startChapterName < 0 || endChapterName < 0
-                                    || startRelease < 0 || endRelease < 0) {
-                                    emitter.onError(Exception("Could not parse manga information"))
-                                    emitter.onComplete()
-                                    return@Listener
-                                }
-
-
-                                val chapter =ChapterImpl(id)
-                                chapter.name = subHtml.substring(startChapterName, endChapterName)
-                                chapter.release = Date()//subHtml.substring(startRelease, endRelease),
-                                chapter.url = subHtml.substring(startUrl, endUrl)
-
-                                //TODO: parse chapter number and release
                                 chapter
                             }
 
-                        manga.name     = html.substring(startName, endName)
-                        manga.summary  = Html.fromHtml(html.substring(startSummary, endSummary)).toString()
-                        manga.authors  = authors
-                        manga.genres   = genres
-                        manga.coverUrl = html.substring(startCover, endCover)
-                        manga.chapters = chapters
+                        Log.i("manga information", "name: ${manga.name}")
+                        Log.i("manga information", "coverUrl: ${manga.coverUrl}")
+                        Log.i("manga information", "authors: ${manga.authors}")
+                        Log.i("manga information", "genres: ${manga.genres}")
+                        Log.i("manga information", "summary: ${manga.summary}")
+                        Log.i("manga information", "rating: ${manga.rating}")
 
-                        //TODO: parse manga rating and status
+                        Log.i("manga information", "chapters: ${manga.chapters!!.map { "name: \"${it.name}\", number: ${it.number}" }}")
 
                         emitter.onNext(manga)
                         emitter.onComplete()
@@ -163,11 +107,22 @@ class Mangakakalot: Source {
         }
     }
 
+    private fun parseStatus(text: String): Manga.Status {
+        return when {
+            text.contains("Ongoing")   -> Manga.Status.OnGoing
+            text.contains("Completed") -> Manga.Status.Finished
+            text.contains("Licensed")  -> Manga.Status.Licensed
+            else                             -> Manga.Status.Unknown
+        }
+    }
+
     override fun fetchMangaCover(manga: Manga): Observable<Drawable> {
         return Observable.create { emitter ->
             Network.getInstance().addToRequestQueue(
                 PictureRequest(manga.coverUrl!!,
                     Response.Listener { picture ->
+                        Log.i("manga cover", "${manga.coverUrl}")
+
                         emitter.onNext(picture)
                         emitter.onComplete()
                     },
@@ -186,21 +141,14 @@ class Mangakakalot: Source {
                 StringRequest(Request.Method.GET,
                     chapter.url,
                     Response.Listener<String> { response ->
-                        chapter.pages = response
-                            .split("img_content")
-                            .dropLast(1)//Remove the last element (url is BEFORE each element)
-                            .map { html ->
-                                val start = html.lastIndexOf("src=\"") + "src=\"".length
-                                val end   = html.indexOf("\"", start)
-
-                                if (start < 0 || end < 0) {
-                                    emitter.onError(Exception("Could not load chapter information"))
-                                    emitter.onComplete()
-                                    return@Listener
-                                }
-
+                        chapter.pages = Jsoup.parse(response)
+                            .select("img.img_content")
+                            .map { element ->
                                 val page = PageImpl(id)
-                                page.url = html.substring(start, end)
+                                page.url = element.attr("src")
+
+                                Log.i("chapter information", "page \"${page.url}\"")
+
                                 page
                             }
 
