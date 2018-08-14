@@ -15,6 +15,7 @@ import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
 import com.vikings.mangareader.storage.ChapterEntity
 import com.vikings.mangareader.storage.Storage
+import kotlin.concurrent.thread
 
 /**
  * An [IntentService] subclass for handling background manga download and manga deletion
@@ -58,13 +59,13 @@ class DownloadService : IntentService("DownloadService") {
 
         request.displayNotification()
 
-
-
         SourceManager.get(chapter.sourceId)
             .fetchChapterInformation(chapter)
             .subscribe({
-                Storage.saveManga(manga)
-                Storage.saveChapter(manga, chapter)
+                thread {
+                    Storage.saveManga(manga)
+                    Storage.saveChapter(manga, chapter)
+                }.join()
 
                 //TODO: Resume download where it stopped.
                 request.progress = 0
@@ -74,15 +75,17 @@ class DownloadService : IntentService("DownloadService") {
                 loadPage(request)
             },
             {
+                it.printStackTrace()
                 //Full request will be resend to the service
-                request.relaunchRequest(this)
-            }
-        )
+                request.relaunchRequest(this, R.string.error_chapter_load)
+            })
 
         SourceManager.get(chapter.sourceId)
             .fetchMangaCover(manga)
             .subscribe(
-            { picture -> Storage.saveCover(manga, picture) },
+            { picture ->
+                thread { Storage.saveCover(manga, picture) }.join()
+            },
             { /* Do nothing, as there is no real problem if the manga cover isn't stored */ }
         )
     }
@@ -96,7 +99,9 @@ class DownloadService : IntentService("DownloadService") {
             source.fetchPageInformation(request.chapter.pages!![request.progress]).subscribe(
                 {
                     //Save picture
-                    Storage.savePage(request.manga, request.chapter, request.progress)
+                    thread {
+                        Storage.savePage(request.manga, request.chapter, request.progress)
+                    }.join()
 
                     ++request.progress
                     request.updateProgress()
@@ -106,7 +111,7 @@ class DownloadService : IntentService("DownloadService") {
                 },
                 {
                     //Full request will be resend to the service
-                    request.relaunchRequest(this)
+                    request.relaunchRequest(this, R.string.error_page_load)
                 }
             )
         }
@@ -114,7 +119,9 @@ class DownloadService : IntentService("DownloadService") {
 
     private fun delete(chapter: ChapterEntity) {
         //TODO: Also delete manga if the manga doesn't contains chapters anymore.
-        Storage.deleteChapter(chapter)
+        thread {
+            Storage.deleteChapter(chapter)
+        }.join()
     }
 
     private fun createNotificationChannel() {
@@ -193,7 +200,7 @@ private data class DownloadRequest(
         notificationManager.cancel(notificationId)
     }
 
-    fun relaunchRequest(context: Context) {
+    fun relaunchRequest(context: Context, reason: Int) {
         val intent = Intent(context, DownloadService::class.java)
         intent.action = DownloadService.DOWNLOAD
         intent.putExtra(DownloadService.CHAPTER, chapter)
@@ -202,7 +209,7 @@ private data class DownloadRequest(
 
         notification
             .setProgress(0, 0, false)
-            .setContentText(context.getString(R.string.error))
+            .setContentText("${context.getString(R.string.error)} ${context.getString(reason)}")
             .setAutoCancel(true)
             .addAction(R.drawable.ic_retry, context.getString(R.string.retry),
                 PendingIntent.getService(context,

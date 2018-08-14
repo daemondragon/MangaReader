@@ -3,7 +3,6 @@ package com.vikings.mangareader.storage
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.PrimaryKey
 import com.vikings.mangareader.core.Chapter
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.Page
@@ -28,7 +27,6 @@ class ChapterEntity: Chapter {
      */
     lateinit var mangaName: String
 
-    @PrimaryKey
     override lateinit var name: String
 
     @Ignore
