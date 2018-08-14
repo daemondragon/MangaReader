@@ -114,13 +114,14 @@ class PageActivity : AppCompatActivity() {
             val currentPage = currentChapter.pages!![pageIndex]
             SourceManager.get(currentChapter.sourceId)
                 .fetchPageInformation(currentPage)
-                .subscribe({ page ->
+                .subscribe(
+                    { page ->
                         page_refresh.isRefreshing = false
 
                         setTitle()
+                        manga_page.setImageDrawable(page.picture)
                         //Go back to the top of the scroll view.
                         page_scroll.fullScroll(ScrollView.FOCUS_UP)
-                        manga_page.setImageDrawable(page.picture)
 
                         loading = false
                     },
