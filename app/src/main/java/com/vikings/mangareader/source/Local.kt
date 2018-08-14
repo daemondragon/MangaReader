@@ -14,7 +14,10 @@ import kotlin.concurrent.thread
 
 
 class Local(context: Context) : Source {
-    override val id: Int = 0
+    companion object {
+        const val id = 0
+    }
+    override val id: Int = Local.id
     override val name: String = context.getString(R.string.local_storage)
 
     override fun fetchLatestMangas(page: Int): Observable<MangasPage> {

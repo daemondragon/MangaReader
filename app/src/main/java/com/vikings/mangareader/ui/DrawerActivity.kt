@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
 import com.vikings.mangareader.Singletons
+import com.vikings.mangareader.source.Local
 import com.vikings.mangareader.ui.catalogue.CatalogueActivity
+import com.vikings.mangareader.ui.mangas_list.MangasListActivity
 import kotlinx.android.synthetic.main.activity_drawer.*
 
 /**
@@ -37,7 +39,7 @@ abstract class DrawerActivity: AppCompatActivity() {
             //Switch to wanted fragment
             val intent = when (menuItem.itemId) {
                 R.id.nav_catalogue      -> { Intent(applicationContext, CatalogueActivity::class.java) }
-                R.id.nav_library        -> { TODO("set current fragment to library") }
+                R.id.nav_library        -> { MangasListActivity.getIntent(applicationContext, Local.id) }
                 R.id.nav_download_queue -> { TODO("set current fragment to dl queue") }
                 R.id.nav_settings       -> { TODO("set current fragment to settings") }
                 else                    -> throw Exception("Unknown menu id")

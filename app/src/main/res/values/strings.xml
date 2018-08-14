@@ -33,6 +33,9 @@
     <string name="status_finished">Finished</string>
     <string name="status_licensed">Licensed</string>
 
+    <string name="download">Download</string>
+    <string name="delete">Delete</string>
+
     <!-- Page activity -->
     <string name="page_picture">Page picture</string>
 

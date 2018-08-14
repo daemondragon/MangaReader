@@ -8,11 +8,7 @@ import android.util.Log
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
-import com.vikings.mangareader.network.DownloadService
-import com.vikings.mangareader.storage.ChapterEntity
-import com.vikings.mangareader.storage.MangaEntity
 import com.vikings.mangareader.ui.DrawerActivity
-import com.vikings.mangareader.ui.page.PageActivity
 import kotlinx.android.synthetic.main.activity_manga.*
 
 
@@ -30,7 +26,7 @@ class MangaActivity : DrawerActivity() {
         }
     }
 
-    private lateinit var manga: Manga
+    lateinit var manga: Manga
 
     private val chaptersListAdapter = ChaptersListAdapter()
 
@@ -116,20 +112,6 @@ class MangaActivity : DrawerActivity() {
                 chaptersListAdapter.chapters.clear()
                 chaptersListAdapter.chapters.addAll(manga.chapters!!)
                 chaptersListAdapter.notifyDataSetChanged()
-
-                setOnItemClickListener { _, _, i, _ ->
-                    startActivity(
-                        PageActivity.getIntent(this@MangaActivity, manga.chapters!!, i))
-                }
-
-                setOnItemLongClickListener { _, _, i, _ ->
-                    if (manga !is MangaEntity)
-                        DownloadService.download(this@MangaActivity, manga, manga.chapters!![i])
-                    else
-                        DownloadService.delete(this@MangaActivity,manga.chapters!![i] as ChapterEntity)
-
-                    true
-                }
             }
         }
     }
