@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MangaReader</string>
 
+    <string name="local_storage">Local storage</string>
+
     <!-- navigation drawer -->
     <string name="catalogue">Catalogue</string>
     <string name="library">Library</string>

@@ -92,6 +92,7 @@ class DownloadService : IntentService("DownloadService") {
 
     private fun loadPage(request: DownloadRequest) {
         if (request.progress >= request.chapter.pages!!.size) {
+            request.chapter.dispose()//Chapter is not needed anymore
             request.cancelNotification()//Finished download
         }
         else {
@@ -107,9 +108,11 @@ class DownloadService : IntentService("DownloadService") {
                     request.updateProgress()
                     request.displayNotification()
 
+                    it.dispose()//Current page is not needed anymore
                     loadPage(request)
                 },
                 {
+                    request.chapter.dispose()//All already loaded page are not needed anymore
                     //Full request will be resend to the service
                     request.relaunchRequest(this, R.string.error_page_load)
                 }

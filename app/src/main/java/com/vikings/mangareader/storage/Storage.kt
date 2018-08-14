@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.vikings.mangareader.core.Chapter
 import com.vikings.mangareader.core.Manga
+import com.vikings.mangareader.core.Page
 import com.vikings.mangareader.core.PageImpl
 import java.io.File
 import java.io.FileOutputStream
@@ -91,6 +92,12 @@ object Storage {
         mangaEntity.chapters = database.chapterDao().all(mangaEntity.name, mangaEntity.originalSourceId)
     }
 
+    fun fetchCover(manga: MangaEntity): Drawable? {
+        val mangaDirectory = File(directory, "${manga.originalSourceId}_${manga.name}")
+        val cover = File(mangaDirectory, "cover.png")
+        return Drawable.createFromPath(cover.path)
+    }
+
     /**
      * Set in the chapter it's pages list where each page contains in the url
      * the path to the picture.
@@ -105,5 +112,9 @@ object Storage {
 
                 page
             }
+    }
+
+    fun fetchPage(page: Page): Drawable? {
+        return Drawable.createFromPath(page.url)
     }
 }

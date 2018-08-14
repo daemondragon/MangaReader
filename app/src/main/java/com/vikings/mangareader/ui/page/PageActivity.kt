@@ -57,10 +57,14 @@ class PageActivity : AppCompatActivity() {
         chapterIndex = intent.extras?.getInt(CHAPTER_INDEX) ?: 0
 
         page_refresh.isEnabled = false//No user interaction
-
-        loadChapter(ChapterSide.Start)
         // To detect left and right swipe
         initGestureDetector()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        loadChapter(ChapterSide.Start)
     }
 
     override fun onDestroy() {
@@ -126,6 +130,9 @@ class PageActivity : AppCompatActivity() {
                         loading = false
                     },
                     {
+                        Log.i("Page", "error page loading $it")
+                        it.printStackTrace()
+
                         page_refresh.isRefreshing = false
                         setTitle()
 
@@ -213,8 +220,8 @@ class PageActivity : AppCompatActivity() {
     private fun initGestureDetector() {
         val gestureListener = object : GestureDetector.SimpleOnGestureListener() {
             override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                if (loading)
-                    return true//Already loading, prevent another loading
+                if (loading)//Already loading, prevent another loading
+                    return super.onFling(e1, e2, velocityX, velocityY)
 
                 val deltaX = e1.x - e2.x
                 val deltaY = e1.y - e2.y

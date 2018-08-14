@@ -47,6 +47,11 @@ class MangaActivity : DrawerActivity() {
                 chapters_summary.showNext()
         }
         manga_refresh.isEnabled = false//No user interaction
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         loadManga()
     }
 
@@ -108,6 +113,7 @@ class MangaActivity : DrawerActivity() {
             chapters_list.apply {
                 adapter = chaptersListAdapter
                 //Display all chapters
+                chaptersListAdapter.chapters.clear()
                 chaptersListAdapter.chapters.addAll(manga.chapters!!)
                 chaptersListAdapter.notifyDataSetChanged()
 
