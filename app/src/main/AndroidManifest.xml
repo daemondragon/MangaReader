@@ -20,7 +20,11 @@
         </activity>
         <activity android:name=".ui.mangas_list.MangasListActivity" />
         <activity android:name=".ui.manga.MangaActivity" />
-        <activity android:name=".ui.page.PageActivity"></activity>
+        <activity android:name=".ui.page.PageActivity" />
+
+        <service
+            android:name=".network.DownloadService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

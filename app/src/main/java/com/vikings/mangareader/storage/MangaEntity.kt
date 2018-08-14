@@ -60,4 +60,24 @@ class MangaEntity: Manga {
     override var favorite: Boolean? = null
 
     override var automaticDownload: Boolean? = null
+
+    companion object {
+        fun from(manga: Manga): MangaEntity {
+            val mangaEntity = MangaEntity()
+
+            mangaEntity.name = manga.name
+            mangaEntity.originalSourceId = manga.sourceId
+            mangaEntity.url = manga.url
+            mangaEntity.coverUrl = manga.coverUrl
+            mangaEntity.summary = manga.summary
+            mangaEntity.authors = manga.authors
+            mangaEntity.genres = manga.genres
+            mangaEntity.rating = manga.rating
+            mangaEntity.status = manga.status
+            mangaEntity.favorite = manga.favorite
+            mangaEntity.automaticDownload = manga.automaticDownload
+
+            return mangaEntity
+        }
+    }
 }

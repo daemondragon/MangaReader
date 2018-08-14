@@ -5,6 +5,7 @@ import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import com.vikings.mangareader.core.Chapter
+import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.Page
 import java.util.*
 
@@ -49,4 +50,19 @@ class ChapterEntity: Chapter {
 
     @Ignore//Page will be retrieved differently
     override var pages: List<Page>? = null
+
+    companion object {
+        fun from(manga: Manga, chapter: Chapter): ChapterEntity {
+            val chapterEntity = ChapterEntity()
+
+            chapterEntity.mangaName = manga.name
+            chapterEntity.name = chapter.name
+            chapterEntity.originalSourceId = chapter.sourceId
+            chapterEntity.url = chapter.url
+            chapterEntity.number = chapter.number
+            chapterEntity.release = chapter.release
+
+            return chapterEntity
+        }
+    }
 }
