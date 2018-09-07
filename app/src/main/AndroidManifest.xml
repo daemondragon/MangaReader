@@ -12,20 +12,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ui.catalogue.CatalogueActivity">
+
+        <activity android:name=".ui.DrawerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.catalogue.CatalogueActivity"/>
         <activity android:name=".ui.mangas_list.MangasListActivity" />
         <activity android:name=".ui.manga.MangaActivity" />
         <activity android:name=".ui.page.PageActivity" />
 
         <service
             android:name=".network.DownloadService"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

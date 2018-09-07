@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
         <FrameLayout
-            android:id="@+id/drawer_fragment"
+            android:id="@+id/drawer_content_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>

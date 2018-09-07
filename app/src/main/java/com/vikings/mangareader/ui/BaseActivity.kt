@@ -9,7 +9,7 @@ import com.vikings.mangareader.R
 import com.vikings.mangareader.source.Local
 import com.vikings.mangareader.ui.catalogue.CatalogueActivity
 import com.vikings.mangareader.ui.mangas_list.MangasListActivity
-import kotlinx.android.synthetic.main.activity_drawer.*
+import kotlinx.android.synthetic.main.activity_base.*
 
 /**
  * Abstract activity whose only purpose is to handle
@@ -19,7 +19,7 @@ abstract class BaseActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_drawer)
+        setContentView(R.layout.activity_base)
 
         //Add child layout
         layoutInflater.inflate(getLayout(), drawer_content_layout)
