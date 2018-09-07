@@ -57,12 +57,12 @@ object Storage {
      * Save the page of the given chapter at the given index.
      * Both chapter.pages and page.picture must not be null.
      */
-    fun savePage(manga: Manga, chapter: Chapter, pageIndex: Int) {
+    fun savePage(manga: Manga, chapter: Chapter, picture: Drawable, pageIndex: Int) {
         val mangaDirectory = File(directory, "${manga.sourceId}_${manga.name}")
         val chapterDirectory = File(mangaDirectory, chapter.name)
         chapterDirectory.mkdirs()
 
-        savePicture(chapterDirectory, chapter.pages!![pageIndex].picture!!, "$pageIndex.png")
+        savePicture(chapterDirectory, picture, "$pageIndex.png")
     }
 
     private fun savePicture(directory: File, picture: Drawable, name: String) {

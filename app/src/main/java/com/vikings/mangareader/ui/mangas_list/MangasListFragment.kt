@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_mangas_list.*
 
 class MangasListFragment : Fragment() {
     companion object {
-        const val SOURCE_ID = "MangaListFragment.sourceId"
+        private const val SOURCE_ID = "MangaListFragment.sourceId"
 
         fun newInstance(sourceId: Int): MangasListFragment {
             return MangasListFragment().apply {
@@ -72,6 +72,12 @@ class MangasListFragment : Fragment() {
                 listener?.onMangaSelected(mangasListAdapter.mangas[i])
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        activity?.title = source.name
     }
 
     private fun loadMangasPage() {

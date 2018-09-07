@@ -30,7 +30,7 @@ class ChaptersListAdapter : BaseAdapter() {
 
         chapterName?.apply {
             text = chapters[position].name
-            setOnClickListener { view -> listener?.onChapterSelected(chapters, position) }
+            setOnClickListener { _ -> listener?.onChapterSelected(chapters, position) }
         }
 
         chapterMenu?.apply {

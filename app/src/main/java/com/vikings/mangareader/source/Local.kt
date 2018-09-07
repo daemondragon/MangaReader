@@ -111,14 +111,13 @@ class Local(context: Context) : Source {
         }
     }
 
-    override fun fetchPageInformation(page: Page): Observable<Page> {
+    override fun fetchPagePicture(page: Page): Observable<Drawable> {
         return Observable.create { emitter ->
             try {
                 val picture = Storage.fetchPage(page)
                 if (picture != null) {
                     Log.i("Local", "page loaded: ${page.url}")
-                    page.picture = picture
-                    emitter.onNext(page)
+                    emitter.onNext(picture)
                 } else
                     emitter.onError(Exception("Could not load manga cover"))
             } catch (e: Exception) {

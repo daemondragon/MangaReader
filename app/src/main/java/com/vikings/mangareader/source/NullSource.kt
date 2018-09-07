@@ -28,7 +28,7 @@ class NullSource(override val id: Int): Source {
         throw Exception("Source not found. Wanted id: $id")
     }
 
-    override fun fetchPageInformation(page: Page): Observable<Page> {
+    override fun fetchPagePicture(page: Page): Observable<Drawable> {
         throw Exception("Source not found. Wanted id: $id")
     }
 }

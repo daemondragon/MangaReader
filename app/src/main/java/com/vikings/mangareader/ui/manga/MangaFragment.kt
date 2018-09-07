@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_manga.*
 
 class MangaFragment : Fragment() {
     companion object {
-        const val MANGA = "MangaFragment.manga"
+        private const val MANGA = "MangaFragment.manga"
 
         fun newInstance(manga: Manga): MangaFragment {
             return MangaFragment().apply {
@@ -56,6 +56,12 @@ class MangaFragment : Fragment() {
         manga_refresh.isEnabled = false//No user interaction
 
         loadManga()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        activity?.title = manga.name
     }
 
     override fun onDestroy() {

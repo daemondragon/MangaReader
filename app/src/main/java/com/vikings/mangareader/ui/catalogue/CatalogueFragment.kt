@@ -36,6 +36,12 @@ class CatalogueFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_catalogue, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        activity?.title = getString(R.string.app_name)
+    }
+
     private fun displaySourceList(sources: List<Source>) {
         Log.i("CatalogueFragment", "displaying source list")
 

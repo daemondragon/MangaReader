@@ -117,13 +117,13 @@ class PageActivity : AppCompatActivity() {
 
             val currentPage = currentChapter.pages!![pageIndex]
             SourceManager.get(currentChapter.sourceId)
-                .fetchPageInformation(currentPage)
+                .fetchPagePicture(currentPage)
                 .subscribe(
-                    { page ->
+                    { picture ->
                         page_refresh.isRefreshing = false
 
                         setTitle()
-                        manga_page.setImageDrawable(page.picture)
+                        manga_page.setImageDrawable(picture)
                         //Go back to the top of the scroll view.
                         page_scroll.fullScroll(ScrollView.FOCUS_UP)
 
@@ -183,8 +183,6 @@ class PageActivity : AppCompatActivity() {
             loadChapter(ChapterSide.End)
         }
         else {
-            currentChapter.pages!![pageIndex].dispose()
-
             --pageIndex
             loadPage()
         }
@@ -204,8 +202,6 @@ class PageActivity : AppCompatActivity() {
             loadChapter(ChapterSide.Start)
         }
         else {
-            currentChapter.pages!![pageIndex].dispose()
-
             ++pageIndex
             loadPage()
         }

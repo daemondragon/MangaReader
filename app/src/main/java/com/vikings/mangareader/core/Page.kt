@@ -1,7 +1,5 @@
 package com.vikings.mangareader.core
 
-import android.graphics.drawable.Drawable
-import android.util.Log
 import java.io.Serializable
 
 /**
@@ -25,19 +23,4 @@ interface Page: Serializable {
      * the [Chapter] and its [Page]s
      */
     var url: String
-
-    /**
-     * The page picture.
-     * Don't forget to [dispose] it when not needed anymore.
-     */
-    var picture: Drawable?
-
-    /**
-     * To call when additional information is not needed anymore, only
-     * a way to get back all the information again
-     */
-    fun dispose() {
-        Log.i("Core", "page disposed")
-        picture = null
-    }
 }

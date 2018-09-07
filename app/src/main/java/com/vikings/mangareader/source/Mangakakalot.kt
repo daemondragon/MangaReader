@@ -164,13 +164,12 @@ class Mangakakalot: Source {
         }
     }
 
-    override fun fetchPageInformation(page: Page): Observable<Page> {
+    override fun fetchPagePicture(page: Page): Observable<Drawable> {
         return Observable.create { emitter ->
             Network.getInstance().addToRequestQueue(
                 PictureRequest(page.url,
                     Response.Listener { picture ->
-                        page.picture = picture
-                        emitter.onNext(page)
+                        emitter.onNext(picture)
                         emitter.onComplete()
                     },
                     Response.ErrorListener {

@@ -14,7 +14,7 @@ class MangaActivity : BaseActivity(), MangaFragment.Listener {
     override fun getLayout(): Int = R.layout.activity_manga
 
     companion object {
-        const val MANGA = "MangaActivity.manga"
+        private const val MANGA = "MangaActivity.manga"
 
         @JvmStatic
         fun getIntent(context: Context, manga: Manga): Intent {

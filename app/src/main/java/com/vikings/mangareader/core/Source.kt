@@ -57,7 +57,7 @@ interface Source {
     fun fetchChapterInformation(chapter: Chapter): Observable<Chapter>
 
     /**
-     * Load information about the page, principally the picture associated.
+     * Load the picture associated with the page.
      */
-    fun fetchPageInformation(page: Page): Observable<Page>
+    fun fetchPagePicture(page: Page): Observable<Drawable>
 }

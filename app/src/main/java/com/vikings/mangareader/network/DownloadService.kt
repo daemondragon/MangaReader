@@ -97,18 +97,17 @@ class DownloadService : IntentService("DownloadService") {
         }
         else {
             val source = SourceManager.get(request.chapter.sourceId)
-            source.fetchPageInformation(request.chapter.pages!![request.progress]).subscribe(
-                {
+            source.fetchPagePicture(request.chapter.pages!![request.progress]).subscribe(
+                { picture ->
                     //Save picture
                     thread {
-                        Storage.savePage(request.manga, request.chapter, request.progress)
+                        Storage.savePage(request.manga, request.chapter, picture, request.progress)
                     }.join()
 
                     ++request.progress
                     request.updateProgress()
                     request.displayNotification()
 
-                    it.dispose()//Current page is not needed anymore
                     loadPage(request)
                 },
                 {

@@ -82,7 +82,6 @@ class Faker: Source {
                 chapter.pages = (0..PAGES_PER_CHAPTER).map { _ ->
                     val page = PageImpl(id)
                     page.url = "fake url"
-                    page.picture = null//Load nothing for the same reason than for cover loading.
 
                     page
                 }
@@ -96,7 +95,7 @@ class Faker: Source {
         }
     }
 
-    override fun fetchPageInformation(page: Page): Observable<Page> {
+    override fun fetchPagePicture(page: Page): Observable<Drawable> {
         return Observable.create {
             it.onError(Exception("Could not load faker page"))
             it.onComplete()
