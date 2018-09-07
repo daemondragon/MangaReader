@@ -23,14 +23,6 @@ class CatalogueFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        SourceManager.observe(this, Observer { list ->
-            list?.apply { displaySourceList(this) }
-        })
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_catalogue, container, false)
@@ -40,6 +32,10 @@ class CatalogueFragment : Fragment() {
         super.onResume()
 
         activity?.title = getString(R.string.app_name)
+
+        SourceManager.observe(this, Observer { list ->
+            list?.apply { displaySourceList(this) }
+        })
     }
 
     private fun displaySourceList(sources: List<Source>) {

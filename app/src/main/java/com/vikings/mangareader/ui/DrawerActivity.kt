@@ -45,10 +45,7 @@ class DrawerActivity : AppCompatActivity(),
         }
 
         //The home is the catalogue fragment
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.drawer_fragment, CatalogueFragment.newInstance())
-            .commit()
+        setFragment(CatalogueFragment.newInstance())
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -77,11 +74,14 @@ class DrawerActivity : AppCompatActivity(),
     }
 
     private fun setFragment(fragment: Fragment) {
-        //Clear the back stack
         for (i in supportFragmentManager.backStackEntryCount downTo 1) {
             supportFragmentManager.popBackStack()
         }
-        setFragmentWithBackStack(fragment)
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.drawer_fragment, fragment)
+            .commit()
     }
 
     private fun setFragmentWithBackStack(fragment: Fragment) {
