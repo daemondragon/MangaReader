@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_drawer.*
  * Abstract activity whose only purpose is to handle
  * all activity that need a Drawer
  */
-abstract class DrawerActivity: AppCompatActivity() {
+abstract class BaseActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

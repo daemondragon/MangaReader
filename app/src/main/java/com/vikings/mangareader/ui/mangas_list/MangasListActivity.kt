@@ -6,10 +6,10 @@ import android.os.Bundle
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
-import com.vikings.mangareader.ui.DrawerActivity
+import com.vikings.mangareader.ui.BaseActivity
 import com.vikings.mangareader.ui.manga.MangaActivity
 
-class MangasListActivity: DrawerActivity(), MangasListFragment.Listener {
+class MangasListActivity: BaseActivity(), MangasListFragment.Listener {
     override fun getLayout(): Int = R.layout.activity_mangas_list
 
     companion object {

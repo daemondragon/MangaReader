@@ -6,7 +6,8 @@ import android.arch.persistence.room.TypeConverters
 
 @Database(
     entities = [MangaEntity::class, ChapterEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 @TypeConverters(StringListConverter::class, StatusConverter::class, DateConverter::class)
 abstract class Database: RoomDatabase() {

@@ -12,10 +12,11 @@ import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Chapter
 import com.vikings.mangareader.network.DownloadService
 import com.vikings.mangareader.storage.ChapterEntity
-import com.vikings.mangareader.ui.page.PageActivity
 
 class ChaptersListAdapter : BaseAdapter() {
     val chapters = mutableListOf<Chapter>()
+
+    var listener: MangaFragment.Listener? = null
 
     override fun getView(position: Int, convertView: View?, container: ViewGroup?): View {
         var result = convertView
@@ -29,9 +30,7 @@ class ChaptersListAdapter : BaseAdapter() {
 
         chapterName?.apply {
             text = chapters[position].name
-            setOnClickListener { view ->
-                view.context.startActivity(PageActivity.getIntent(view.context, chapters, position))
-            }
+            setOnClickListener { view -> listener?.onChapterSelected(chapters, position) }
         }
 
         chapterMenu?.apply {
@@ -59,7 +58,7 @@ class ChaptersListAdapter : BaseAdapter() {
                             else
                                 DownloadService.download(
                                     view.context,
-                                    (view.context as MangaActivity).manga,
+                                    (view.context as MangaFragment).manga,
                                     chapters[position])
 
                             true

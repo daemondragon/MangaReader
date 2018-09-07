@@ -44,7 +44,4 @@
     <string name="channel_name">Chapter download</string>
     <string name="channel_description">Show chapter download progress</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

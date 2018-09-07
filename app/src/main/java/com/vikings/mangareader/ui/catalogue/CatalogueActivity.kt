@@ -2,10 +2,10 @@ package com.vikings.mangareader.ui.catalogue
 
 import android.util.Log
 import com.vikings.mangareader.R
-import com.vikings.mangareader.ui.DrawerActivity
+import com.vikings.mangareader.ui.BaseActivity
 import com.vikings.mangareader.ui.mangas_list.MangasListActivity
 
-class CatalogueActivity : DrawerActivity(), CatalogueFragment.Listener {
+class CatalogueActivity : BaseActivity(), CatalogueFragment.Listener {
     override fun getLayout(): Int = R.layout.activity_catalogue
 
     override fun onResume() {
