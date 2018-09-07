@@ -28,14 +28,17 @@ class MangaFragment : Fragment() {
         }
     }
 
-    lateinit var manga: Manga
+    private lateinit var manga: Manga
 
-    private val chaptersListAdapter = ChaptersListAdapter()
+    private lateinit var chaptersListAdapter: ChaptersListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.apply { manga = this.getSerializable(MANGA) as Manga }
+        arguments?.apply {
+            manga = this.getSerializable(MANGA) as Manga
+            chaptersListAdapter = ChaptersListAdapter(manga)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

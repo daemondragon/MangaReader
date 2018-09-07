@@ -10,10 +10,11 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Chapter
+import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.network.DownloadService
 import com.vikings.mangareader.storage.ChapterEntity
 
-class ChaptersListAdapter : BaseAdapter() {
+class ChaptersListAdapter(val manga: Manga/*TODO: hack ?*/) : BaseAdapter() {
     val chapters = mutableListOf<Chapter>()
 
     var listener: MangaFragment.Listener? = null
@@ -58,7 +59,7 @@ class ChaptersListAdapter : BaseAdapter() {
                             else
                                 DownloadService.download(
                                     view.context,
-                                    (view.context as MangaFragment).manga,
+                                    manga,
                                     chapters[position])
 
                             true
