@@ -14,7 +14,8 @@ more complex layout could be created thanks to this.
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
         android:layout_marginStart="8dp"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:maxLines="1">
     </TextView>
 
     <ImageView

@@ -6,7 +6,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.vikings.mangareader.R
-import com.vikings.mangareader.Singletons
 import com.vikings.mangareader.source.Local
 import com.vikings.mangareader.ui.catalogue.CatalogueActivity
 import com.vikings.mangareader.ui.mangas_list.MangasListActivity
@@ -21,8 +20,6 @@ abstract class DrawerActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawer)
-
-        Singletons.initAll(applicationContext)
 
         //Add child layout
         layoutInflater.inflate(getLayout(), drawer_content_layout)

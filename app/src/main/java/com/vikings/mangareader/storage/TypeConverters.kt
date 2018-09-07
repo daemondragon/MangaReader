@@ -35,7 +35,7 @@ class StatusConverter {
             1 -> Manga.Status.Finished
             2 -> Manga.Status.Licensed
             3 -> Manga.Status.Unknown
-            else -> Manga.Status.Unknown//TODO: Throw exception ?
+            else -> Manga.Status.Unknown
         }
     }
 }

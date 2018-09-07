@@ -8,6 +8,7 @@ import android.util.Log
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.source.Local
 import com.vikings.mangareader.ui.DrawerActivity
 import kotlinx.android.synthetic.main.activity_manga.*
 
@@ -71,7 +72,17 @@ class MangaActivity : DrawerActivity() {
                         { picture -> manga_cover.setImageDrawable(picture)},
                         { /* Do nothing ins case of cover loading error */})
 
-                //TODO: load favorite and auto dl from db
+                SourceManager.get(Local.id)
+                    .fetchMangaInformation(manga)
+                    .subscribe({
+
+                        },
+                        {
+                            /*
+                             * Do nothing.
+                             *
+                             */
+                        })
 
                 manga_refresh.isRefreshing = false
             },{
