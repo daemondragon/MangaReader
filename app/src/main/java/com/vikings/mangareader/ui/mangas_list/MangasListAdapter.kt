@@ -15,7 +15,7 @@ class MangasListAdapter : BaseAdapter() {
         var result = convertView
         if (result == null) {
             result = LayoutInflater.from(container?.context)
-                .inflate(R.layout.mangas_list_item, container, false)
+                .inflate(R.layout.item_mangas_list, container, false)
         }
 
         result!!.findViewById<TextView>(R.id.mangas_list_item_name)?.text = mangas[position].name

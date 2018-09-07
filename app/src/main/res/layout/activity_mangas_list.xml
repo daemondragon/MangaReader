@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mangas_list_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.mangas_list.MangasListActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/mangas_list_refresh"
+    <FrameLayout
+        android:id="@+id/manga_list_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
 
-        <ListView
-            android:id="@+id/mangas_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <!--
+    TODO: if tablet in landscape mode, display the manga fragment next to the manga list
+    -->
 
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

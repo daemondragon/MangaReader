@@ -21,7 +21,7 @@ class ChaptersListAdapter : BaseAdapter() {
         var result = convertView
         if (result == null) {
             result = LayoutInflater.from(container?.context)
-                .inflate(R.layout.chapters_list_item, container, false)
+                .inflate(R.layout.item_chapters_list, container, false)
         }
 
         val chapterName = result?.findViewById<TextView>(R.id.chapters_list_item_name)
