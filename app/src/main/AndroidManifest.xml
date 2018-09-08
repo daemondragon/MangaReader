@@ -20,10 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.catalogue.CatalogueActivity"/>
-        <activity android:name=".ui.mangas_list.MangasListActivity" />
-        <activity android:name=".ui.manga.MangaActivity" />
         <activity android:name=".ui.page.PageActivity" />
 
         <service

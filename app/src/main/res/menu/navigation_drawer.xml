@@ -8,6 +8,9 @@
             android:id="@+id/nav_library"
             android:title="@string/library" />
         <item
+            android:id="@+id/nav_favorites"
+            android:title="@string/favorites" />
+        <item
             android:id="@+id/nav_download_queue"
             android:title="@string/download_queue" />
         <item

@@ -38,6 +38,7 @@ class DrawerActivity : AppCompatActivity(),
             when (menuItem.itemId) {
                 R.id.nav_catalogue      -> { setFragment(CatalogueFragment.newInstance()); true }
                 R.id.nav_library        -> { setFragment(MangasListFragment.newInstance(Local.id)); true }
+                R.id.nav_favorites      -> { TODO("set current fragment to favorites") }
                 R.id.nav_download_queue -> { TODO("set current fragment to dl queue") }
                 R.id.nav_settings       -> { TODO("set current fragment to settings") }
                 else                    -> false
