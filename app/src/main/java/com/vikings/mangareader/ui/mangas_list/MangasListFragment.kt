@@ -33,8 +33,6 @@ class MangasListFragment : Fragment() {
 
     private val mangasListAdapter = MangasListAdapter()
 
-    private var loading = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -65,13 +63,8 @@ class MangasListFragment : Fragment() {
                     val firstVisibleItem = this@apply.firstVisiblePosition
 
 
-                    if (!loading && totalItemsCount <= firstVisibleItem + visibleItemsCount) {
-                        loading = true
-
-                        if (mangaListViewModel.requestMoreMangas())
-                            mangas_list_refresh.isRefreshing = true
-                        else
-                            loading = false
+                    if (totalItemsCount <= firstVisibleItem + visibleItemsCount) {
+                        mangaListViewModel.requestMoreMangas()
                     }
                 }
 
@@ -88,28 +81,27 @@ class MangasListFragment : Fragment() {
             .observe(this, Observer { mangasList ->
                 if (mangasList != null)
                     mangasListAdapter.setMangaList(mangasList)
-
-                loading = false
-                mangas_list_refresh.isRefreshing = false
             })
 
         mangaListViewModel
             .getErrors()
             .observe(this, Observer { error ->
-                mangas_list_refresh.isRefreshing = false
-
-                Snackbar.make(mangas_list_coordinator,
-                    R.string.error_mangas_list_load,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.retry) { _ ->
-                        loading = false
-                        mangaListViewModel.requestMoreMangas()
-                    }
-                    .show()
+                if (error != null) {
+                    Snackbar.make(mangas_list_coordinator,
+                        R.string.error_mangas_list_load,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.retry) { _ ->
+                            mangaListViewModel.errorHandled()
+                            mangaListViewModel.requestMoreMangas()
+                        }
+                        .show()
+                }
             })
 
-        loading = true
-        mangas_list_refresh.isRefreshing = true
+        mangaListViewModel
+            .getLoadingState()
+            .observe(this, Observer { loadingState -> mangas_list_refresh.isRefreshing = loadingState!! })
+
         mangaListViewModel.requestMoreMangas()
     }
 

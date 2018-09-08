@@ -19,11 +19,13 @@ class MangaListViewModel(sourceId: Int): ViewModel() {
     private val mangaList = mutableListOf<Manga>()
 
     private val mangaListLiveData = MutableLiveData<List<Manga>>()
-    private val errors = MutableLiveData<String>()
+    private val errorsLiveData = MutableLiveData<String>()
+    private val loadingLiveData = MutableLiveData<Boolean>()
 
     private var nextPage = 0//Next page to load.
     private var hasNextPage = true//Is there a page to load next
-    private var loading = false//To not load a page twice
+
+    private var onError = false//If set to true, no more request is allowed.
 
     fun getSource(): Source {
         return source
@@ -40,7 +42,14 @@ class MangaListViewModel(sourceId: Int): ViewModel() {
      * Get all errors when they come
      */
     fun getErrors(): LiveData<String> {
-        return errors
+        return errorsLiveData
+    }
+
+    /**
+     * Used to know when the loading state.
+     */
+    fun getLoadingState(): LiveData<Boolean> {
+        return loadingLiveData
     }
 
     /**
@@ -52,32 +61,38 @@ class MangaListViewModel(sourceId: Int): ViewModel() {
             if (!hasNextPage)
                 return false
 
-            if (!loading) {
-                loading = true//Something to load, load it
+            if (loadingLiveData.value != true && !onError) {
+                loadingLiveData.value = true
 
                 source.fetchMangasBy(source.getCategories()[0].second, nextPage)
-                    .subscribe({ mangasPage ->
-                        synchronized(this) {
-                            hasNextPage = mangasPage.hasNext
-                            ++nextPage
+                    .subscribe(
+                        { mangasPage ->
+                            synchronized(this) {
+                                hasNextPage = mangasPage.hasNext
+                                ++nextPage
 
-                            mangaList.addAll(mangasPage.mangas)
-                            mangaListLiveData.value = mangaList
+                                mangaList.addAll(mangasPage.mangas)
+                                mangaListLiveData.value = mangaList
 
-                            loading = false
-                        }
-
-                    }, { error ->
-                        synchronized(this) {
-                            errors.value = error.toString()
-                            //To prevent being notified again when the user rotate the screen
-                            errors.value = null
-
-                            loading = false
-                        }
-                    })
+                                loadingLiveData.value = false
+                            }
+                        },
+                        { error ->
+                            synchronized(this) {
+                                onError = true
+                                errorsLiveData.value = error.toString()
+                                loadingLiveData.value = false
+                            }
+                        })
             }
             return hasNextPage
+        }
+    }
+
+    fun errorHandled() {
+        synchronized(this) {
+            onError = false
+            errorsLiveData.value = null//Prevent having a reload on rotation
         }
     }
 }
