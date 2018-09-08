@@ -1,18 +1,19 @@
 package com.vikings.mangareader.ui.mangas_list
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
-import com.vikings.mangareader.core.Source
-import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.viewmodels.MangaListViewModel
+import com.vikings.mangareader.viewmodels.MangaListViewModelFactory
 import kotlinx.android.synthetic.main.fragment_mangas_list.*
 
 class MangasListFragment : Fragment() {
@@ -28,18 +29,21 @@ class MangasListFragment : Fragment() {
         }
     }
 
-    private lateinit var source: Source
+    private lateinit var mangaListViewModel: MangaListViewModel
 
     private val mangasListAdapter = MangasListAdapter()
 
-    private var nextPage = 0//next page to load
-    private var hasNextPage = true
-    private var loading = false//To not load twice the same page
+    private var loading = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.apply { source = SourceManager.get(this.getInt(SOURCE_ID)) }
+        arguments?.apply {
+            mangaListViewModel = ViewModelProviders.of(
+                this@MangasListFragment,
+                MangaListViewModelFactory(this.getInt(SOURCE_ID)))
+                .get(MangaListViewModel::class.java)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -60,9 +64,15 @@ class MangasListFragment : Fragment() {
                     val visibleItemsCount = this@apply.childCount
                     val firstVisibleItem = this@apply.firstVisiblePosition
 
-                    if (!loading && hasNextPage &&
-                        totalItemsCount <= firstVisibleItem + visibleItemsCount)
-                        loadMangasPage()
+
+                    if (!loading && totalItemsCount <= firstVisibleItem + visibleItemsCount) {
+                        loading = true
+
+                        if (mangaListViewModel.requestMoreMangas())
+                            mangas_list_refresh.isRefreshing = true
+                        else
+                            loading = false
+                    }
                 }
 
                 override fun onScrollStateChanged(p0: AbsListView?, p1: Int) { /* Nothing to do*/ }
@@ -72,35 +82,20 @@ class MangasListFragment : Fragment() {
                 listener?.onMangaSelected(mangasListAdapter.mangas[i])
             }
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
+        mangaListViewModel
+            .getMangaList()
+            .observe(this, Observer { mangasList ->
+                if (mangasList != null)
+                    mangasListAdapter.setMangaList(mangasList)
 
-        activity?.title = source.name
-    }
-
-    private fun loadMangasPage() {
-        loading = true
-        mangas_list_refresh.isRefreshing = true
-
-        Log.i("MangasList", "loading mangas page")
-
-        source.fetchMangasBy(source.getCategories()[0].second ,nextPage)
-            .subscribe({
+                loading = false
                 mangas_list_refresh.isRefreshing = false
+            })
 
-                mangas_list_view.post {
-                    mangasListAdapter.mangas.addAll(it.mangas)
-                    mangasListAdapter.notifyDataSetChanged()
-
-                    hasNextPage = it.hasNext
-                    if (hasNextPage)
-                        ++nextPage//Loading succeeded, so go to next page
-
-                    loading = false
-                }
-            },{
+        mangaListViewModel
+            .getErrors()
+            .observe(this, Observer { error ->
                 mangas_list_refresh.isRefreshing = false
 
                 Snackbar.make(mangas_list_coordinator,
@@ -108,10 +103,20 @@ class MangasListFragment : Fragment() {
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.retry) { _ ->
                         loading = false
-                        loadMangasPage()
+                        mangaListViewModel.requestMoreMangas()
                     }
                     .show()
             })
+
+        loading = true
+        mangas_list_refresh.isRefreshing = true
+        mangaListViewModel.requestMoreMangas()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        activity?.title = mangaListViewModel.getSource().name
     }
 
     private var listener: Listener? = null

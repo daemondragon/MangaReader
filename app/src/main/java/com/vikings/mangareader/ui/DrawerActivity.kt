@@ -45,8 +45,10 @@ class DrawerActivity : AppCompatActivity(),
             }
         }
 
-        //The home is the catalogue fragment
-        setFragment(CatalogueFragment.newInstance())
+
+        if (savedInstanceState == null)
+            setFragment(CatalogueFragment.newInstance())//The home is the catalogue fragment
+        //else: activity have been rotated, android will automatically recreate all the back stack
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
