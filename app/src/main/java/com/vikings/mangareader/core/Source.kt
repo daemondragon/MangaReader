@@ -29,10 +29,25 @@ interface Source {
     val name: String
 
     /**
-     * Get the latest manga.
-     * TODO: instead of having fetchXXXMangas(page), have fetchManga(type, page) where type is source dependent.
+     * Get all categories that the source support.
+     * For an online source, the categories could be: Popular manga, latest manga...
+     * The first element of the pair is the name to display (can be internationalized)
+     * while the second is constant and used to identify the category.
+     *
+     * Must have at least one category.
      */
-    fun fetchLatestMangas(page: Int): Observable<MangasPage>
+    fun getCategories(): List<Pair<String, String>>
+
+    /**
+     * Get a mangas list for the given category at the give page (0 indexed).
+     * categoryKey will always be present in the [getCategories] result.
+     */
+    fun fetchMangasBy(categoryKey: String, page: Int): Observable<MangasPage>
+
+    /**
+     * Search the manga name at the given page (0 indexed).
+     */
+    fun fetchSearch(mangaName: String, page: Int): Observable<MangasPage>
 
     /**
      * Load information about the manga.

@@ -12,7 +12,15 @@ import io.reactivex.Observable
 class NullSource(override val id: Int): Source {
     override val name: String = "Null Source"
 
-    override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
+    override fun getCategories(): List<Pair<String, String>> {
+        throw Exception("Source not found. Wanted id: $id")
+    }
+
+    override fun fetchMangasBy(categoryKey: String, page: Int): Observable<MangasPage> {
+        throw Exception("Source not found. Wanted id: $id")
+    }
+
+    override fun fetchSearch(mangaName: String, page: Int): Observable<MangasPage> {
         throw Exception("Source not found. Wanted id: $id")
     }
 

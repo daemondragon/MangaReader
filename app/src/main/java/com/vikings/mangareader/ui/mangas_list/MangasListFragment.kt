@@ -86,7 +86,7 @@ class MangasListFragment : Fragment() {
 
         Log.i("MangasList", "loading mangas page")
 
-        source.fetchLatestMangas(nextPage)
+        source.fetchMangasBy(source.getCategories()[0].second ,nextPage)
             .subscribe({
                 mangas_list_refresh.isRefreshing = false
 

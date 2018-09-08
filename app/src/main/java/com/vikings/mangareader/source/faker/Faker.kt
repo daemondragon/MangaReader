@@ -16,13 +16,17 @@ class Faker: Source {
     private val CHAPTERS_PER_MANGA = 10
     private val PAGES_PER_CHAPTER  = 20
 
-    override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
+    override fun getCategories(): List<Pair<String, String>> {
+        return listOf(Pair("Category 1", "1"), Pair("Category 2", "2"), Pair("Category 3", "3"))
+    }
+
+    override fun fetchMangasBy(categoryKey: String, page: Int): Observable<MangasPage> {
         return Observable.create {
             if (FakerFailure.isSuccess()) {
                 it.onNext(MangasPage(
                     mangas = (0..MANGAS_PER_PAGE).map { index ->
                         val manga = MangaImpl(id)
-                        manga.name = "Manga ${index + MANGAS_PER_PAGE * page} (page $page)"
+                        manga.name = "Manga ${index + MANGAS_PER_PAGE * page} (page $page) (category $categoryKey)"
                         manga.url = "fake url"
                         manga
                     },
@@ -35,6 +39,10 @@ class Faker: Source {
 
             it.onComplete()
         }
+    }
+
+    override fun fetchSearch(mangaName: String, page: Int): Observable<MangasPage> {
+        TODO("not implemented")
     }
 
     override fun fetchMangaInformation(manga: Manga): Observable<Manga> {

@@ -16,8 +16,12 @@ class Mangakakalot: Source {
     override val id: Int = 2
     override val name: String = "Mangakakalot"
 
-    override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
-        val pageUrl = "http://mangakakalot.com/manga_list?type=latest&category=all&state=all&page=${page + 1}"
+    override fun getCategories(): List<Pair<String, String>> {
+        return listOf(Pair("TODO: Latest", "latest"), Pair("TODO: Popular", "topview"), Pair("TODO: New", "newest"))
+    }
+
+    override fun fetchMangasBy(categoryKey: String, page: Int): Observable<MangasPage> {
+        val pageUrl = "http://mangakakalot.com/manga_list?type=$categoryKey&category=all&state=all&page=${page + 1}"
         return Observable.create { emitter ->
             Network.getInstance().addToRequestQueue(
                 StringRequest(Request.Method.GET, pageUrl,
@@ -54,6 +58,10 @@ class Mangakakalot: Source {
                 )
             )
         }
+    }
+
+    override fun fetchSearch(mangaName: String, page: Int): Observable<MangasPage> {
+        TODO("not implemented")
     }
 
     override fun fetchMangaInformation(manga: Manga): Observable<Manga> {
@@ -180,5 +188,4 @@ class Mangakakalot: Source {
             )
         }
     }
-
 }

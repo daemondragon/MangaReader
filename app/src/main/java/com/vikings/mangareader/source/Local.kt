@@ -20,7 +20,11 @@ class Local(context: Context) : Source {
     override val id: Int = Local.id
     override val name: String = context.getString(R.string.local_storage)
 
-    override fun fetchLatestMangas(page: Int): Observable<MangasPage> {
+    override fun getCategories(): List<Pair<String, String>> {
+        return listOf(Pair("TODO: All", "all"))
+    }
+
+    override fun fetchMangasBy(categoryKey: String, page: Int): Observable<MangasPage> {
         return Observable.create { emitter ->
             val handler = Handler()
             thread {
@@ -43,6 +47,10 @@ class Local(context: Context) : Source {
                 }
             }
         }
+    }
+
+    override fun fetchSearch(mangaName: String, page: Int): Observable<MangasPage> {
+        TODO("not implemented")
     }
 
     override fun fetchMangaInformation(manga: Manga): Observable<Manga> {
