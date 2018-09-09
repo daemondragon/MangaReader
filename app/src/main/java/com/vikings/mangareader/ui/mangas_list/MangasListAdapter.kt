@@ -9,7 +9,7 @@ import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Manga
 
 class MangasListAdapter : BaseAdapter() {
-    var mangas = listOf<Manga>()
+    private var mangas = listOf<Manga>()
 
     override fun getView(position: Int, convertView: View?, container: ViewGroup?): View {
         var result = convertView
@@ -25,6 +25,10 @@ class MangasListAdapter : BaseAdapter() {
     fun setMangaList(mangas: List<Manga>) {
         this.mangas = mangas
         notifyDataSetChanged()
+    }
+
+    fun getMangaList(): List<Manga> {
+        return mangas
     }
 
     override fun getItem(position: Int): Any {

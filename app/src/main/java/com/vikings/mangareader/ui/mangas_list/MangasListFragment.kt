@@ -72,7 +72,7 @@ class MangasListFragment : Fragment() {
 
             })
             setOnItemClickListener { _, _, i, _ ->
-                listener?.onMangaSelected(mangasListAdapter.mangas[i])
+                listener?.onMangaSelected(mangasListAdapter.getMangaList()[i])
             }
         }
 

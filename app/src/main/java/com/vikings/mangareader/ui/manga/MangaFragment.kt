@@ -1,18 +1,20 @@
 package com.vikings.mangareader.ui.manga
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.vikings.mangareader.R
 import com.vikings.mangareader.core.Chapter
 import com.vikings.mangareader.core.Manga
 import com.vikings.mangareader.core.SourceManager
+import com.vikings.mangareader.viewmodels.MangaViewModel
+import com.vikings.mangareader.viewmodels.MangaViewModelFactory
 import kotlinx.android.synthetic.main.fragment_manga.*
 
 class MangaFragment : Fragment() {
@@ -28,9 +30,9 @@ class MangaFragment : Fragment() {
         }
     }
 
-    private lateinit var manga: Manga
-
     private lateinit var chaptersListAdapter: ChaptersListAdapter
+    private lateinit var manga: Manga
+    private lateinit var mangaViewModel: MangaViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,8 @@ class MangaFragment : Fragment() {
         arguments?.apply {
             manga = this.getSerializable(MANGA) as Manga
             chaptersListAdapter = ChaptersListAdapter(manga)
+            mangaViewModel = ViewModelProviders.of(this@MangaFragment, MangaViewModelFactory(manga))
+                .get(MangaViewModel::class.java)
         }
     }
 
@@ -58,46 +62,35 @@ class MangaFragment : Fragment() {
         }
         manga_refresh.isEnabled = false//No user interaction
 
-        loadManga()
+        mangaViewModel.getManga().observe(this,
+            Observer { manga -> if (manga != null) display(manga) })
+        mangaViewModel.getMangaCover().observe(this,
+            Observer { picture -> manga_cover.setImageDrawable(picture) })
+
+        mangaViewModel.getErrors().observe(this,
+            Observer { error ->
+                if (error != null) {
+                    Snackbar.make(manga_coordinator,
+                        R.string.error_manga_load,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.retry) { _ ->
+                            mangaViewModel.errorHandled()
+                            mangaViewModel.fetchMangaInformation()
+                        }
+                        .show()
+                }
+            })
+
+        mangaViewModel.getLoadingState().observe(this,
+            Observer { loadingState -> manga_refresh.isRefreshing = loadingState!! })
+
+        mangaViewModel.fetchMangaInformation()
     }
 
     override fun onResume() {
         super.onResume()
 
         activity?.title = manga.name
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        manga.dispose()//To clear chapter information
-    }
-
-
-    private fun loadManga() {
-        manga_refresh.isRefreshing = true
-        val source = SourceManager.get(manga.sourceId)
-
-        Log.i("Manga", "loading manga information")
-
-        source.fetchMangaInformation(manga)
-            .subscribe({ manga ->
-                display(manga)
-
-                source.fetchMangaCover(manga)
-                    .subscribe(
-                        { picture -> manga_cover.setImageDrawable(picture)},
-                        { /* Do nothing ins case of cover loading error */})
-
-                manga_refresh.isRefreshing = false
-            },{
-                manga_refresh.isRefreshing = false
-
-                Snackbar.make(manga_coordinator,
-                    R.string.error_manga_load,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.retry) { _ -> loadManga() }
-                    .show()
-            })
     }
 
     private fun display(manga: Manga) {
