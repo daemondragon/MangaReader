@@ -83,8 +83,6 @@ class MangaFragment : Fragment() {
 
         mangaViewModel.getLoadingState().observe(this,
             Observer { loadingState -> manga_refresh.isRefreshing = loadingState!! })
-
-        mangaViewModel.fetchMangaInformation()
     }
 
     override fun onResume() {

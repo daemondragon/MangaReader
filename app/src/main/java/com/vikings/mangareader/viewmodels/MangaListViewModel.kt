@@ -24,6 +24,10 @@ class MangaListViewModel(sourceId: Int): ViewModel() {
 
     private var onError = false//If set to true, no more request is allowed.
 
+    init {
+        requestMoreMangas()
+    }
+
     fun getSource(): Source {
         return source
     }

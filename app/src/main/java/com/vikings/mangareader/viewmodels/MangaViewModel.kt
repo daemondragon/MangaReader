@@ -17,6 +17,10 @@ class MangaViewModel(private val manga: Manga): ViewModel() {
 
     private var onError = false//If set to true, no more request is allowed.
 
+    init {
+        fetchMangaInformation()
+    }
+
     fun getManga(): LiveData<Manga> {
         return mangaLiveData
     }

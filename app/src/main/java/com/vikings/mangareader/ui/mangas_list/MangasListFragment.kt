@@ -101,8 +101,6 @@ class MangasListFragment : Fragment() {
         mangaListViewModel
             .getLoadingState()
             .observe(this, Observer { loadingState -> mangas_list_refresh.isRefreshing = loadingState!! })
-
-        mangaListViewModel.requestMoreMangas()
     }
 
     override fun onResume() {
